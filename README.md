@@ -1,5 +1,6 @@
-# Rexshack Gaming Version
+# rsg-weapons
  
-# credits
-- original resouce created by : https://github.com/qbcore-redm-framework
-- convert and rework by : https://github.com/QRCore-RedM-Re
+# Credits
+- https://github.com/qbcore-redm-framework/qbr-weapons
+- https://github.com/QRCore-RedM-Re/qr-weapons
+ 

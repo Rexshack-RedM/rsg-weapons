@@ -5,15 +5,15 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 description 'rsg-weapons'
 
 client_scripts {
-	'client/client.lua'
+    'client/client.lua'
 }
 
 server_scripts {
-	'server/server.lua',
+    'server/server.lua',
 }
 
 shared_scripts {
-	'config.lua'
+    'config.lua'
 }
 
 lua54 'yes'
