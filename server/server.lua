@@ -22,6 +22,10 @@ RSGCore.Functions.CreateUseableItem('ammo_shotgun', function(source, item)
     TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_SHOTGUN', Config.AmountShotgunAmmo, item)
 end)
 
+RSGCore.Functions.CreateUseableItem('ammo_arrow', function(source, item)
+    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_ARROW', Config.AmountArrowAmmo, item)
+end)
+
 -- end of use ammo
 
 -- save ammo
