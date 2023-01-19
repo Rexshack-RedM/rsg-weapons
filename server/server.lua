@@ -55,7 +55,7 @@ AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
     local Player = RSGCore.Functions.GetPlayer(src)
     Player.Functions.RemoveItem(ammoitem, 1)
     TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[ammoitem], 'remove')
-    RSGCore.Functions.Notify(src, 'Weapon Reloaded', 'success')
+    RSGCore.Functions.Notify(src, Lang:t('success.weapon_reloaded'), 'success')
 end)
 
 RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amount)
