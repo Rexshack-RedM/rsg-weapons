@@ -2,10 +2,30 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 local currentSerial = nil
 local UsedWeapons = {}
 
+-- Models Loader
+local LoadModel = function(model)
+    if not IsModelInCdimage(model) then
+        return false
+    end
+
+    RequestModel(model)
+
+    while not HasModelLoaded(model) do
+        Wait(0)
+    end
+
+    return true
+end
+
+local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, p3)
+    return Citizen.InvokeNative(0x74C9090FDD1BB48E, entity, componentHash, weaponHash, p3)
+end
+
 RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local ped = PlayerPedId()
     local weaponName = tostring(weaponData.name)
     local hash = GetHashKey(weaponData.name)
+    local wepSerial = tostring(weaponData.info.serie)
 
     if not UsedWeapons[tonumber(hash)] then
 
@@ -65,6 +85,14 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             SetPedAmmo(ped, hash, weaponData.info.ammo - weaponData.info.ammoclip)
             SetAmmoInClip(ped, hash, weaponData.info.ammoclip)
         end
+
+        if Config.Debug then
+            print("Weapon Serial    : "..wepSerial)
+            print("Weapon Hash      : "..hash)
+        end
+
+        TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
+
         SetCurrentPedWeapon(ped,hash,true)
 
     else
@@ -76,6 +104,24 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         UsedWeapons[tonumber(hash)] = nil
     end
     currentSerial = weaponData.info.serie
+end)
+
+-- Components Loader
+RegisterNetEvent("rsg-weapon:client:LoadComponents")
+AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
+    Wait(500)
+
+    for i = 1, #components do
+        if components[i].model ~= 0 then
+            LoadModel(components[i].model)
+        end
+
+        GiveWeaponComponentToEntity(PlayerPedId(), components[i].name, hash, true)
+
+        if components[i].model ~= 0 then
+            SetModelAsNoLongerNeeded(components[i].model)
+        end
+    end
 end)
 
 -- load ammo
