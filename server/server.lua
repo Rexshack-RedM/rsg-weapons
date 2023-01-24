@@ -73,7 +73,7 @@ RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
 
     if Config.Debug then
         print("Weapon Serial    : "..tostring(serial))
-        print("Weapon Owner     : "..tostring('('..owner..')'..ownerName))
+        print("Weapon Owner     : "..tostring('('..citizenid..')'..ownerName))
     end
 
     local result = MySQL.Sync.fetchAll('SELECT * FROM player_weapons WHERE serial = @serial and citizenid = @citizenid',
