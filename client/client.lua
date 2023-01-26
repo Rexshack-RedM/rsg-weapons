@@ -221,7 +221,7 @@ end)
 -- update ammo loop
 CreateThread(function()
     while true do
-        Wait(1000)
+        Wait(60000)
         local ped = PlayerPedId()
         local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
         local getammo = GetAmmoInPedWeapon(ped, heldWeapon)
