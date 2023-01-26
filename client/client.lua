@@ -82,6 +82,10 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             local _ammoType = Config.AmmoTypes[weaponName]
             Citizen.InvokeNative(0x106A811C6D3035F3, ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
         else
+            if weaponData.info.ammo == nil or weaponData.info.ammoclip == nil then
+                weaponData.info.ammo = 0
+                weaponData.info.ammoclip = 0
+            end
             SetPedAmmo(ped, hash, weaponData.info.ammo - weaponData.info.ammoclip)
             SetAmmoInClip(ped, hash, weaponData.info.ammoclip)
         end
