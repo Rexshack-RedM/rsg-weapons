@@ -1,5 +1,6 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local currentSerial = nil
+local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
 
@@ -33,9 +34,18 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local weaponName = tostring(weaponData.name)
     local hash = GetHashKey(weaponData.name)
     local wepSerial = tostring(weaponData.info.serie)
+
+    for i = 1, #EquippedWeapons do
+        local usedHash = EquippedWeapons[i]
+
+        if hash == usedHash then
+            alreadyUsed = true
+        end
+    end
+
     EquippedWeapons[#EquippedWeapons + 1] = hash
 
-    if not UsedWeapons[tonumber(hash)] then
+    if not alreadyUsed and not UsedWeapons[tonumber(hash)] then
 
         if string.find(weaponName, 'thrown') == false then
             UsedWeapons[tonumber(hash)] = {
@@ -114,6 +124,15 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         print('removing weapon ')
         RemoveWeaponFromPed(ped,hash)
         UsedWeapons[tonumber(hash)] = nil
+
+        for i = 1, #EquippedWeapons do
+            local usedHash = EquippedWeapons[i]
+
+            if hash == usedHash then
+                EquippedWeapons[i] = nil
+                alreadyUsed = false
+            end
+        end
     end
     currentSerial = weaponData.info.serie
 end)
