@@ -1,6 +1,13 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 local currentSerial = nil
 local UsedWeapons = {}
+local EquippedWeapons = {}
+
+exports('EquippedWeapons', function()
+    if EquippedWeapons ~= nil then
+        return EquippedWeapons
+    end
+end)
 
 -- Models Loader
 local LoadModel = function(model)
@@ -26,6 +33,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local weaponName = tostring(weaponData.name)
     local hash = GetHashKey(weaponData.name)
     local wepSerial = tostring(weaponData.info.serie)
+    EquippedWeapons[#EquippedWeapons + 1] = hash
 
     if not UsedWeapons[tonumber(hash)] then
 
