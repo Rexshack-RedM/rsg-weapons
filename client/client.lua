@@ -161,88 +161,74 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
     local weapongroup = GetWeapontypeGroup(weapon)
     local currentSerial = currentSerial
+    local max_ammo = 0
+    local ammo_type = ''
+    local valid_ammo = false
+
     if Config.Debug == true then
         print(weapon)
         print(weapongroup)
         print(currentSerial)
+        print(ammotype)
     end
-    if currentSerial ~= nil then
-        if weapongroup == -1101297303 then -- revolver weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxRevolverAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_revolver')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == 416676503 then -- pistol weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxPistolAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_pistol')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == -594562071 then -- repeater weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxRepeaterAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_repeater')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == 970310034 then -- rifle weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxRifleAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_rifle')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == -1212426201 then -- sniper rifle weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxRifleAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_rifle')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == 860033945 then -- shotgun weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxShotgunAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_shotgun')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        elseif weapongroup == -1241684019 then -- bow weapon group
-            local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
-            if total + (amount/2) < Config.MaxArrowAmmo then
-                if RSGCore.Shared.Weapons[weapon] then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
-                end
-            else
-                RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
-            end
-        else
-            RSGCore.Functions.Notify(Lang:t('error.wrong_ammo_for_weapon'), 'error')
-        end
-    else
+
+    if currentSerial == nil then
         RSGCore.Functions.Notify(Lang:t('error.you_are_not_holding_weapon'), 'error')
+        return
     end
+
+    if weapongroup == -1101297303 and ammotype == 'AMMO_REVOLVER' then -- revolver weapon group
+        max_ammo = Config.MaxRevolverAmmo
+        ammo_type = 'ammo_revolver'
+        valid_ammo = true
+    end
+
+    if weapongroup == 416676503 and ammotype == 'AMMO_PISTOL' then -- pistol weapon group
+        max_ammo = Config.MaxPistolAmmo
+        ammo_type = 'ammo_pistol'
+        valid_ammo = true
+    end
+
+    if weapongroup == -594562071 and ammotype == 'AMMO_REPEATER' then -- repeater weapon group
+        max_ammo = Config.MaxRepeaterAmmo
+        ammo_type = 'ammo_repeater'
+        valid_ammo = true
+    end
+
+    if (weapongroup == 970310034 or weapongroup == -1212426201) and ammotype == 'AMMO_RIFLE' then -- rifle/sniper weapon group
+        max_ammo = Config.MaxRifleAmmo
+        ammo_type = 'ammo_rifle'
+        valid_ammo = true
+    end
+
+    if weapongroup == 860033945 and ammotype == 'AMMO_SHOTGUN' then -- shotgun weapon group
+        max_ammo = Config.MaxShotgunAmmo
+        ammo_type = 'ammo_shotgun'
+        valid_ammo = true
+    end
+
+    if weapongroup == -1241684019 and ammotype == 'AMMO_ARROW' then -- bow weapon group
+        max_ammo = Config.MaxArrowAmmo
+        ammo_type = 'ammo_arrow'
+        valid_ammo = true
+    end
+
+    if not valid_ammo then
+        RSGCore.Functions.Notify(Lang:t('error.wrong_ammo_for_weapon'), 'error')
+        return
+    end
+
+    local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
+
+    if total + (amount/2) < max_ammo then
+        if RSGCore.Shared.Weapons[weapon] then
+            Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
+            TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', ammo_type)
+        end
+        return
+    end
+
+    RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
 end)
 
 -- update ammo loop
@@ -255,7 +241,7 @@ CreateThread(function()
         local getammoclip = GetAmmoInClip(ped, heldWeapon)
         if currentSerial ~= nil and heldWeapon ~= -1569615261 then
             TriggerServerEvent('rsg-weapons:server:SaveAmmo', currentSerial, tonumber(getammo), tonumber(getammoclip))
-        end        
+        end
     end
 end)
 
