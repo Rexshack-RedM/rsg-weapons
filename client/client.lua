@@ -104,7 +104,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 weaponData.info.ammo = 0
                 weaponData.info.ammoclip = 0
             end
-            SetPedAmmo(ped, hash, weaponData.info.ammo - weaponData.info.ammoclip)
+            SetPedAmmo(ped, hash, weaponData.info.ammo + weaponData.info.ammoclip)
             SetAmmoInClip(ped, hash, weaponData.info.ammoclip)
         end
 
