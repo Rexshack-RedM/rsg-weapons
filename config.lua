@@ -3,21 +3,21 @@ Config = {}
 Config.Debug = false
 
 -- limit the amount of ammo players can load
-Config.MaxArrowAmmo = 30
-Config.MaxRevolverAmmo = 200
-Config.MaxPistolAmmo = 30
-Config.MaxRepeaterAmmo = 60
-Config.MaxRifleAmmo = 60
-Config.MaxShotgunAmmo = 60
+Config.MaxArrowAmmo = 12
+Config.MaxRevolverAmmo = 12
+Config.MaxPistolAmmo = 12
+Config.MaxRepeaterAmmo = 12
+Config.MaxRifleAmmo = 12
+Config.MaxShotgunAmmo = 12
 
 -- amount of ammo per load
-Config.AmountArrowAmmo = 6
-Config.AmountRevolverAmmo = 6
-Config.AmountPistolAmmo = 6
+Config.AmountArrowAmmo = 12
+Config.AmountRevolverAmmo = 12
+Config.AmountPistolAmmo = 12
 Config.AmountRepeaterAmmo = 12
 Config.AmountRifleAmmo = 12
 Config.AmountShotgunAmmo = 12
-Config.AmountThrowablesAmmo = 3
+Config.AmountThrowablesAmmo = 1
 
 --- Damage Weapon
 Config.WeaponDmg = 0.65
