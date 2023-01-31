@@ -57,18 +57,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         end
 
         if weaponName == 'weapon_bow' or weaponName == 'weapon_bow_improved' then
-            if weaponData.info.ammo == nil then
-                local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
-                if hasItem then
-                    weaponData.info.ammo = Config.AmountArrowAmmo
-                    weaponData.info.ammoclip = Config.AmountArrowAmmo
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
-                else
-                    weaponData.info.ammo = 0
-                    weaponData.info.ammoclip = 0
-                    RSGCore.Functions.Notify(Lang:t('error.no_arrows_your_inventory_load'), 'error')
-                end
-            elseif weaponData.info.ammo == 0 then
+            if weaponData.info.ammo == nil or weaponData.info.ammo == 0 then
                 local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
                 if hasItem then
                     weaponData.info.ammo = Config.AmountArrowAmmo
