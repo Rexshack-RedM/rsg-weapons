@@ -161,7 +161,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
         print(ammotype)
     end
 
-    if currentSerial == nil then
+    if weapon == -1569615261 then
         RSGCore.Functions.Notify(Lang:t('error.you_are_not_holding_weapon'), 'error')
         return
     end
@@ -209,7 +209,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
     local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
 
-    if total + math.floor(amount / 2) < max_ammo then
+    if total + math.floor(amount * 0.5) < max_ammo then
         if RSGCore.Shared.Weapons[weapon] then
             Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', ammo_type)
