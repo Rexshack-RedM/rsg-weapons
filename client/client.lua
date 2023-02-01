@@ -83,7 +83,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
         end
         if weaponName == 'weapon_bow' or weaponName == 'weapon_bow_improved' then
-            SetPedAmmo(ped, hash, weaponData.info.ammo)
+            Citizen.InvokeNative(0x14E56BC5B5DB6A19, ped, hash, weaponData.info.ammo)
 
         elseif  string.find(weaponName, 'thrown') then
             local _ammoType = Config.AmmoTypes[weaponName]
@@ -93,8 +93,8 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 weaponData.info.ammo = 0
                 weaponData.info.ammoclip = 0
             end
-            SetPedAmmo(ped, hash, weaponData.info.ammo == weaponData.info.ammoclip)
-            SetAmmoInClip(ped, hash, weaponData.info.ammoclip)
+            Citizen.InvokeNative(0x14E56BC5B5DB6A19, ped, hash, weaponData.info.ammo)
+            Citizen.InvokeNative(0xDCD2A934D65CB497, ped, hash, weaponData.info.ammoclip)
         end
 
         if Config.Debug then
@@ -209,7 +209,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
     local total = Citizen.InvokeNative(0x015A522136D7F951, PlayerPedId(), weapon, Citizen.ResultAsInteger()) -- GetAmmoInPedWeapon
 
-    if total + (amount/2) < max_ammo then
+    if total + math.floor(amount / 2) < max_ammo then
         if RSGCore.Shared.Weapons[weapon] then
             Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', ammo_type)
