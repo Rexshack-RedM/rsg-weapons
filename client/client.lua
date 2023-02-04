@@ -227,7 +227,7 @@ CreateThread(function()
         local ped = PlayerPedId()
         local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
         local getammo = GetAmmoInPedWeapon(ped, heldWeapon)
-        local getammoclip = GetAmmoInClip(ped, heldWeapon)
+        local _,getammoclip = GetAmmoInClip(ped, heldWeapon)
         if currentSerial ~= nil and heldWeapon ~= -1569615261 then
             TriggerServerEvent('rsg-weapons:server:SaveAmmo', currentSerial, tonumber(getammo), tonumber(getammoclip))
         end
