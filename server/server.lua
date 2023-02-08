@@ -36,13 +36,13 @@ RegisterNetEvent('rsg-weapons:server:SaveAmmo', function(serie, ammo, ammoclip)
     local itemData
     for v,k in pairs(Player.PlayerData.items) do
         if k.type == 'weapon' then
-            if ''..k.info.serie..'' == ''..serie..'' then
+            if k.info.serie == serie then
                 svslot = k.slot
                 itemData = Player.Functions.GetItemBySlot(svslot)
                 itemData.info.ammo = ammo
                 itemData.info.ammoclip = ammoclip
-                Player.Functions.RemoveItem(itemData.name, itemData.amount, slot)
-                Player.Functions.AddItem(itemData.name, itemData.amount, slot, itemData.info)
+                Player.Functions.RemoveItem(itemData.name, itemData.amount, svslot)
+                Player.Functions.AddItem(itemData.name, itemData.amount, svslot, itemData.info)
             end
         end
     end
