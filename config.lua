@@ -8,6 +8,7 @@ Config.MaxRevolverAmmo = 12
 Config.MaxPistolAmmo = 12
 Config.MaxRepeaterAmmo = 12
 Config.MaxRifleAmmo = 12
+Config.MaxVarmintAmmo = 12
 Config.MaxShotgunAmmo = 12
 
 -- amount of ammo per load
@@ -16,6 +17,7 @@ Config.AmountRevolverAmmo = 12
 Config.AmountPistolAmmo = 12
 Config.AmountRepeaterAmmo = 12
 Config.AmountRifleAmmo = 12
+Config.AmountVarmintAmmo = 12
 Config.AmountShotgunAmmo = 12
 Config.AmountThrowablesAmmo = 1
 

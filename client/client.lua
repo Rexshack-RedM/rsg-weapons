@@ -202,6 +202,12 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
         valid_ammo = true
     end
 
+    if weapongroup == 970310034 and weapon == -570967010 and (ammotype == 'AMMO_22') then -- varmint rifle weapon group
+        max_ammo = Config.MaxVarmintAmmo
+        ammo_type = 'ammo_varmint'
+        valid_ammo = true
+    end
+
     if not valid_ammo then
         RSGCore.Functions.Notify(Lang:t('error.wrong_ammo_for_weapon'), 'error')
         return
