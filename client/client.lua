@@ -208,6 +208,13 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
         valid_ammo = true
     end
 
+    if (weapongroup == 970310034 or weapongroup == -1212426201) and weapon ~= -570967010
+    and ammotype == 'AMMO_RIFLE_ELEPHANT' then -- rifle weapon group
+        max_ammo = Config.MaxRifleAmmo
+        ammo_type = 'ammo_rifle_elephant'
+        valid_ammo = true
+    end
+
     if not valid_ammo then
         RSGCore.Functions.Notify(Lang:t('error.wrong_ammo_for_weapon'), 'error')
         return
