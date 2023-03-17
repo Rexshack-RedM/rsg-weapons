@@ -2,6 +2,9 @@ Config = {}
 
 Config.Debug = false
 
+-- settings
+Config.UpdateAmmo = 60000 -- amount of time before saving player ammo in miliseconds
+
 -- limit the amount of ammo players can load
 Config.MaxArrowAmmo = 12
 Config.MaxRevolverAmmo = 12

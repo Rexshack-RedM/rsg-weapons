@@ -236,7 +236,7 @@ end)
 -- update ammo loop
 CreateThread(function()
     while true do
-        Wait(60000)
+        Wait(Config.UpdateAmmo)
         local ped = PlayerPedId()
         local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
         local getammo = GetAmmoInPedWeapon(ped, heldWeapon)
@@ -253,7 +253,7 @@ Citizen.CreateThread(function()
         SetPlayerWeaponDamageModifier(PlayerId(),Config.WeaponDmg)
         SetPlayerMeleeWeaponDamageModifier(PlayerId(),Config.MeleeDmg)
         if IsPlayerFreeAiming(PlayerId()) then
-            DisableControlAction(0  ,0x8FFC75D6 ,true)
+            DisableControlAction(0, 0x8FFC75D6, true)
         end
     end
 end)
