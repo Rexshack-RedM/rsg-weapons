@@ -25,9 +25,70 @@ local LoadModel = function(model)
     return true
 end
 
+local getGuidFromItemId = function(inventoryId, itemData, category, slotId)
+    local outItem = DataView.ArrayBuffer(8 * 13)
+
+    if not itemData then
+        itemData = 0
+    end
+
+    local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer())
+
+    if success then
+        return outItem:Buffer()
+    end
+
+    return nil
+end
+
+local addWardrobeInventoryItem = function(itemName, slotHash)
+    local itemHash = GetHashKey(itemName)
+    local addReason = `ADD_REASON_DEFAULT`
+    local inventoryId = 1
+    local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, itemHash, 0)
+
+    if not isValid then
+        return false
+    end
+
+    local characterItem = getGuidFromItemId(inventoryId, nil, `CHARACTER`, 0xA1212100)
+
+    if not characterItem then
+        return false
+    end
+
+    local wardrobeItem = getGuidFromItemId(inventoryId, characterItem, `WARDROBE`, 0x3DABBFA7)
+
+    if not wardrobeItem then
+        return false
+    end
+
+    local itemData = DataView.ArrayBuffer(8 * 13)
+    local isAdded = Citizen.InvokeNative(0xCB5D11F9508A928D, inventoryId, itemData:Buffer(), wardrobeItem, itemHash, slotHash, 1, addReason)
+
+    if not isAdded then
+        return false
+    end
+
+    local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
+
+    return equipped
+end
+
 local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, p3)
     return Citizen.InvokeNative(0x74C9090FDD1BB48E, entity, componentHash, weaponHash, p3)
 end
+
+RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
+    local ped = PlayerPedId()
+
+    addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
+    addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
+
+    Citizen.InvokeNative(0x1B7C5ADA8A6910A0, `SP_WEAPON_DUALWIELD`, true)
+    Citizen.InvokeNative(0x46B901A8ECDB5A61, `SP_WEAPON_DUALWIELD`, true)
+    Citizen.InvokeNative(0x83B8D50EB9446BBA, ped, true)
+end)
 
 RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local ped = PlayerPedId()
