@@ -36,7 +36,7 @@ end)
 
 -- end of use ammo
 
--- save ammo
+-- save ammo changed by adlan
 RegisterNetEvent('rsg-weapons:server:SaveAmmo', function(serie, ammo, ammoclip)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
@@ -46,14 +46,13 @@ RegisterNetEvent('rsg-weapons:server:SaveAmmo', function(serie, ammo, ammoclip)
         if k.type == 'weapon' then
             if k.info.serie == serie then
                 svslot = k.slot
-                itemData = Player.Functions.GetItemBySlot(svslot)
-                itemData.info.ammo = ammo
-                itemData.info.ammoclip = ammoclip
-                Player.Functions.RemoveItem(itemData.name, itemData.amount, svslot)
-                Player.Functions.AddItem(itemData.name, itemData.amount, svslot, itemData.info)
+
+                Player.PlayerData.items[svslot].info.ammo = ammo
+                Player.PlayerData.items[svslot].info.ammoclip = ammoclip
             end
         end
     end
+    Player.Functions.SetInventory(Player.PlayerData.items)
 end)
 
 -- remove ammo from player
