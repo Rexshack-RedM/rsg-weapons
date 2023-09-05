@@ -1,9 +1,8 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
-local currentSerial = nil
 local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
-
+local weaponInHands= {}
 exports('EquippedWeapons', function()
     if EquippedWeapons ~= nil then
         return EquippedWeapons
@@ -137,10 +136,11 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             GiveWeaponToPed_2(ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
             TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
         else
-            if weaponData.info.ammo == nil then
+             if weaponData.info.ammo == nil then
                 weaponData.info.ammo = 0
                 weaponData.info.ammoclip = 0
-            end
+            end 
+            --local _currentAmmo = loadedAmmo[wepSerial]
             Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
         end
         if weaponName == 'weapon_bow' or weaponName == 'weapon_bow_improved' then
@@ -168,9 +168,6 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         SetCurrentPedWeapon(ped,hash,true)
 
     else
-        local ammo = GetAmmoInPedWeapon(PlayerPedId(), hash)
-        local ammobool, ammoclip = GetAmmoInClip(PlayerPedId(),hash)
-        TriggerServerEvent('rsg-weapons:server:SaveAmmo', weaponData.info.serie, ammo, ammoclip)
         print('removing weapon ')
         RemoveWeaponFromPed(ped,hash)
         UsedWeapons[tonumber(hash)] = nil
@@ -184,7 +181,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             end
         end
     end
-    currentSerial = weaponData.info.serie
+   weaponInHands[hash] = weaponData.info.serie
 end)
 
 -- Components Loader
@@ -210,7 +207,8 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     local ped = PlayerPedId()
     local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
     local weapongroup = GetWeapontypeGroup(weapon)
-    local currentSerial = currentSerial
+
+    local _currentSerial = weaponInHands[weapon]
     local max_ammo = 0
     local ammo_type = ''
     local valid_ammo = false
@@ -218,7 +216,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     if Config.Debug == true then
         print(weapon)
         print(weapongroup)
-        print(currentSerial)
+        print(_currentSerial)
         print(ammotype)
     end
 
@@ -287,6 +285,12 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
         if RSGCore.Shared.Weapons[weapon] then
             Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', ammo_type)
+
+            Wait(500)
+            local getammo = GetAmmoInPedWeapon(ped, weapon)
+            local _,getammoclip = GetAmmoInClip(ped, weapon)
+            TriggerServerEvent('rsg-weapons:server:SaveAmmo', _currentSerial, tonumber(getammo), tonumber(getammoclip))
+
         end
         return
     end
@@ -294,18 +298,24 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
 end)
 
--- update ammo loop
+-- only update during shooting
 CreateThread(function()
+
     while true do
-        Wait(Config.UpdateAmmo)
+        Wait(1)
         local ped = PlayerPedId()
-        local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
-        local getammo = GetAmmoInPedWeapon(ped, heldWeapon)
-        local _,getammoclip = GetAmmoInClip(ped, heldWeapon)
-        if currentSerial ~= nil and heldWeapon ~= -1569615261 then
-            TriggerServerEvent('rsg-weapons:server:SaveAmmo', currentSerial, tonumber(getammo), tonumber(getammoclip))
+        if IsPedShooting(ped) then
+            local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+            local getammo = GetAmmoInPedWeapon(ped, heldWeapon)
+            local _,getammoclip = GetAmmoInClip(ped, heldWeapon)
+            if weaponInHands[heldWeapon] ~= nil and heldWeapon ~= -1569615261 then
+
+                TriggerServerEvent('rsg-weapons:server:SaveAmmo', weaponInHands[heldWeapon], tonumber(getammo), tonumber(getammoclip))
+
+            end
         end
     end
+
 end)
 
 Citizen.CreateThread(function()
