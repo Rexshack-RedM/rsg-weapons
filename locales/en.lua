@@ -7,6 +7,7 @@ local Translations = {
     },
     success = {
         weapon_reloaded = 'Weapon Reloaded',
+        weapon_repaired = 'Weapon Repaired',
     },
     primary = {
         var = 'text goes here',
@@ -18,7 +19,7 @@ local Translations = {
         var = 'text goes here',
     },
     progressbar = {
-        var = 'text goes here',
+        repairing_weapon = 'Repairing Weapon',
     },
 }
 

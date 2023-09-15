@@ -345,3 +345,24 @@ Citizen.CreateThread(function()
         end
     end
 end)
+
+------------------------------------------------------------------------------------------------------
+-- weaponsmith : weapon repair
+------------------------------------------------------------------------------------------------------
+
+RegisterNetEvent('rsg-weapons:client:repairweapon', function()
+    local ped = PlayerPedId()
+    local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+    if weaponInHands[heldWeapon] ~= nil and heldWeapon ~= -1569615261 then
+        RSGCore.Functions.Progressbar('do-repair', Lang:t('progressbar.repairing_weapon'), Config.RepairTime, false, true, {
+            disableMovement = true,
+            disableCarMovement = false,
+            disableMouse = false,
+            disableCombat = true,
+        }, {}, {}, {}, function() -- Done
+            TriggerServerEvent('rsg-weapons:server:repairweapon', weaponInHands[heldWeapon])
+        end)
+    end
+end)
+
+------------------------------------------------------------------------------------------------------

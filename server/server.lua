@@ -102,3 +102,21 @@ RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
 
     TriggerClientEvent('rsg-weapon:client:LoadComponents', src, components, hash)
 end)
+
+-- repair weapon
+RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    local svslot = nil
+    local itemData
+    for v,k in pairs(Player.PlayerData.items) do
+        if k.type == 'weapon' then
+            if k.info.serie == serie then
+                svslot = k.slot
+                Player.PlayerData.items[svslot].info.quality = 100
+            end
+        end
+    end
+    Player.Functions.SetInventory(Player.PlayerData.items)
+    RSGCore.Functions.Notify(src, Lang:t('success.weapon_repaired'), 'success')
+end)
