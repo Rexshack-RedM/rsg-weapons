@@ -185,6 +185,12 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 end
             end
         end
+        -- set weapon degradation
+        local object = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(PlayerPedId(), 0))
+        if not DoesEntityExist(object) then return end
+        local currentDeg = wepQuality / 100
+        Citizen.InvokeNative(0xA7A57E89E965D839, object, currentDeg)
+        
         weaponInHands[hash] = weaponData.info.serie
     else
         RSGCore.Functions.Notify('weapon is degraded!', 'error')
