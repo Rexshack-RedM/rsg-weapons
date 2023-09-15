@@ -4,6 +4,7 @@ local Translations = {
         max_mmo_capacity = 'Max Ammo Capacity',
         wrong_ammo_for_weapon = 'wrong ammo for weapon!',
         you_are_not_holding_weapon = 'you are not holding a weapon!',
+        weapon_degraded = 'weapon is degraded!',
     },
     success = {
         weapon_reloaded = 'Weapon Reloaded',

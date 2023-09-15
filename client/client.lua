@@ -197,7 +197,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         
         weaponInHands[hash] = weaponData.info.serie
     else
-        RSGCore.Functions.Notify('weapon is degraded!', 'error')
+        RSGCore.Functions.Notify(Lang:t('error.weapon_degraded'), 'error')
     end
 end)
 
