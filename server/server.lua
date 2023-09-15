@@ -49,6 +49,9 @@ RegisterNetEvent('rsg-weapons:server:SaveAmmo', function(serie, ammo, ammoclip)
 
                 Player.PlayerData.items[svslot].info.ammo = ammo
                 Player.PlayerData.items[svslot].info.ammoclip = ammoclip
+                -- weapon quality update
+                local newquality = (Player.PlayerData.items[svslot].info.quality - Config.DegradeRate)
+                Player.PlayerData.items[svslot].info.quality = newquality
             end
         end
     end

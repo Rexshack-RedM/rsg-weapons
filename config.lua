@@ -5,6 +5,9 @@ Config.Debug = false
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
 
+-- weapon degradation
+Config.DegradeRate = 0.01
+
 -- limit the amount of ammo players can load
 Config.MaxArrowAmmo = 12
 Config.MaxRevolverAmmo = 12
