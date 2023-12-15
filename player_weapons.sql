@@ -1,12 +1,12 @@
-CREATE TABLE `player_weapons`
-(
+CREATE TABLE IF NOT EXISTS `player_weapons` (
     `id` int NOT NULL AUTO_INCREMENT,
     `serial` varchar(16) NOT NULL,
     `citizenid` varchar(9) NOT NULL,
     `components` varchar(4096) NOT NULL DEFAULT '{}',
+    `ammo` int(3) NOT NULL DEFAULT 0,
+    `ammoclip` int(3) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
-)
-ENGINE=InnoDB;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Sample Data
 INSERT INTO `player_weapons` (`id`, `serial`, `citizenid`, `components`) VALUES

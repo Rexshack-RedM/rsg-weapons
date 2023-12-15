@@ -67,26 +67,17 @@ end)
 
 -- end of use ammo
 
--- save ammo changed by adlan
-RegisterNetEvent('rsg-weapons:server:SaveAmmo', function(serie, ammo, ammoclip)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    local svslot = nil
-    local itemData
-    for v,k in pairs(Player.PlayerData.items) do
-        if k.type == 'weapon' then
-            if k.info.serie == serie then
-                svslot = k.slot
+-- callback to get weapon info
+RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(source, cb, weaponserial)
+    local weaponinfo = MySQL.query.await('SELECT * FROM player_weapons WHERE serial=@weaponserial', { ['@weaponserial'] = weaponserial })
+    if weaponinfo[1] == nil then return end
+    cb(weaponinfo)
+end)
 
-                Player.PlayerData.items[svslot].info.ammo = ammo
-                Player.PlayerData.items[svslot].info.ammoclip = ammoclip
-                -- weapon quality update
-                local newquality = (Player.PlayerData.items[svslot].info.quality - Config.DegradeRate)
-                Player.PlayerData.items[svslot].info.quality = newquality
-            end
-        end
-    end
-    Player.Functions.SetInventory(Player.PlayerData.items)
+-- update ammo
+RegisterServerEvent('rsg-weapons:server:updateammo', function(serial, ammo, ammoclip)
+    MySQL.update('UPDATE player_weapons SET ammo = ? WHERE serial = ?', { ammo, serial })
+    MySQL.update('UPDATE player_weapons SET ammoclip = ? WHERE serial = ?', { ammoclip, serial })
 end)
 
 -- remove ammo from player
