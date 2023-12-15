@@ -2,7 +2,7 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
-local currentserial = nil
+local weaponInHands = {}
 
 exports('EquippedWeapons', function()
     if EquippedWeapons ~= nil then
@@ -199,8 +199,8 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 local currentDeg = wepQuality / 100
                 Citizen.InvokeNative(0xA7A57E89E965D839, object, currentDeg)
             end
-            
-            currentserial = weaponData.info.serie
+
+            weaponInHands[hash] = weaponData.info.serie
         else
             RSGCore.Functions.Notify(Lang:t('error.weapon_degraded'), 'error')
         end
@@ -231,7 +231,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
     local weapongroup = GetWeapontypeGroup(weapon)
 
-    local _currentSerial = currentserial
+    local _currentSerial = weaponInHands[weapon]
     local max_ammo = 0
     local ammo_type = ''
     local valid_ammo = false
@@ -325,12 +325,12 @@ CreateThread(function()
     while true do
         local ped = PlayerPedId()
         local holdingweapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
-        if currentserial ~= nil and holdingweapon ~= -1569615261 then
+        if weaponInHands[holdingweapon] ~= nil and holdingweapon ~= -1569615261 then
             local IsGun = Citizen.InvokeNative(0x705BE297EEBDB95D, holdingweapon)
             if IsGun then
                 local currentammo = GetAmmoInPedWeapon(ped, holdingweapon)
-                local currentammoclip = GetAmmoInClip(ped, heldWeapon)
-                TriggerServerEvent('rsg-weapons:server:updateammo', currentserial, tonumber(currentammo), tonumber(currentammoclip))
+                local currentammoclip = GetAmmoInClip(ped, holdingweapon)
+                TriggerServerEvent('rsg-weapons:server:updateammo', weaponInHands[holdingweapon], tonumber(currentammo), tonumber(currentammoclip))
             end
         end
         Wait(1000)
