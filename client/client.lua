@@ -100,7 +100,6 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     RSGCore.Functions.TriggerCallback('rsg-weapons:server:getweaponinfo', function(results)
 
         local weponammo = results[1].ammo
-        local weponammoclip = results[1].ammoclip
 
         if wepQuality > 1 then
             
@@ -130,12 +129,10 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
                         if hasItem then
                             weponammo = Config.AmountArrowAmmo
-                            weponammoclip = Config.AmountArrowAmmo
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             weponammo = 0
-                            weponammoclip = 0
-                            RSGCore.Functions.Notify(Lang:t('error.no_arrows_your_inventory_load'), 'error')
+                            lib.notify({ title = Lang:t('error.no_arrows_your_inventory_load'), type = 'error', duration = 5000 })
                         end
                     end
                     Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
@@ -147,7 +144,6 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 else
                      if weponammo == nil then
                         weponammo = 0
-                        weponammoclip = 0
                     end 
                     --local _currentAmmo = loadedAmmo[wepSerial]
                     Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
@@ -159,18 +155,18 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     local _ammoType = Config.AmmoTypes[weaponName]
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
                 else
-                    if weponammo == nil or weponammoclip == nil then
+                    if weponammo == nil then
                         weponammo = 0
-                        weponammoclip = 0
                     end
                     Citizen.InvokeNative(0x14E56BC5B5DB6A19, ped, hash, weponammo)
-                    Citizen.InvokeNative(0xDCD2A934D65CB497, ped, hash, weponammoclip)
                 end
 
                 if Config.Debug then
                     print("Weapon Serial    : "..wepSerial)
                     print("Weapon Hash      : "..hash)
                 end
+
+                weaponInHands[hash] = wepSerial
 
                 TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
 
@@ -190,6 +186,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     end
                 end
             end
+
             -- set degradation
             local object = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(PlayerPedId(), 0))
             if not DoesEntityExist(object) then return end
@@ -200,9 +197,10 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 Citizen.InvokeNative(0xA7A57E89E965D839, object, currentDeg)
             end
 
-            weaponInHands[hash] = weaponData.info.serie
+            weaponInHands[hash] = wepSerial
+
         else
-            RSGCore.Functions.Notify(Lang:t('error.weapon_degraded'), 'error')
+            lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
         end
     end, wepSerial)
 end)
@@ -233,6 +231,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
     local _currentSerial = weaponInHands[weapon]
     local max_ammo = 0
+    local amount_ammo = 0
     local ammo_type = ''
     local valid_ammo = false
 
@@ -250,42 +249,49 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
     if weapongroup == -1101297303 and ammotype == 'AMMO_REVOLVER' then -- revolver weapon group
         max_ammo = Config.MaxRevolverAmmo
+        amount_ammo = Config.AmountRevolverAmmo
         ammo_type = 'ammo_revolver'
         valid_ammo = true
     end
 
     if weapongroup == 416676503 and ammotype == 'AMMO_PISTOL' then -- pistol weapon group
         max_ammo = Config.MaxPistolAmmo
+        amount_ammo = Config.AmountPistolAmmo
         ammo_type = 'ammo_pistol'
         valid_ammo = true
     end
 
     if weapongroup == -594562071 and ammotype == 'AMMO_REPEATER' then -- repeater weapon group
         max_ammo = Config.MaxRepeaterAmmo
+        amount_ammo = Config.AmountRepeaterAmmo
         ammo_type = 'ammo_repeater'
         valid_ammo = true
     end
 
     if (weapongroup == 970310034 or weapongroup == -1212426201) and ammotype == 'AMMO_RIFLE' then -- rifle/sniper weapon group
         max_ammo = Config.MaxRifleAmmo
+        amount_ammo = Config.AmountRifleAmmo
         ammo_type = 'ammo_rifle'
         valid_ammo = true
     end
 
     if weapongroup == 860033945 and ammotype == 'AMMO_SHOTGUN' then -- shotgun weapon group
         max_ammo = Config.MaxShotgunAmmo
+        amount_ammo = Config.AmountShotgunAmmo
         ammo_type = 'ammo_shotgun'
         valid_ammo = true
     end
 
     if weapongroup == -1241684019 and ammotype == 'AMMO_ARROW' then -- bow weapon group
         max_ammo = Config.MaxArrowAmmo
+        amount_ammo = Config.AmountArrowAmmo
         ammo_type = 'ammo_arrow'
         valid_ammo = true
     end
 
     if weapongroup == 970310034 and weapon == -570967010 and (ammotype == 'AMMO_22') then -- varmint rifle weapon group
         max_ammo = Config.MaxVarmintAmmo
+        amount_ammo = Config.AmountVarmintAmmo
         ammo_type = 'ammo_varmint'
         valid_ammo = true
     end
@@ -293,12 +299,13 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     if (weapongroup == 970310034 or weapongroup == -1212426201) and weapon ~= -570967010
     and ammotype == 'AMMO_RIFLE_ELEPHANT' then -- rifle weapon group
         max_ammo = Config.MaxRifleAmmo
+        amount_ammo = Config.AmountRifleAmmo
         ammo_type = 'ammo_rifle_elephant'
         valid_ammo = true
     end
 
     if not valid_ammo then
-        RSGCore.Functions.Notify(Lang:t('error.wrong_ammo_for_weapon'), 'error')
+        lib.notify({ title = Lang:t('error.wrong_ammo_for_weapon'), type = 'error', duration = 5000 })
         return
     end
 
@@ -306,17 +313,17 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
     if total + math.floor(amount * 0.5) < max_ammo then
         if RSGCore.Shared.Weapons[weapon] then
-            Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount, 0xCA3454E6) -- AddAmmoToPedByType
+            Citizen.InvokeNative(0x106A811C6D3035F3, ped, GetHashKey(ammotype), amount_ammo, 0xCA3454E6) -- AddAmmoToPedByType
             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', ammo_type)
             Wait(500)
             local getammo = GetAmmoInPedWeapon(ped, weapon)
-            local _,getammoclip = GetAmmoInClip(ped, weapon)
-            TriggerServerEvent('rsg-weapons:server:updateammo', _currentSerial, tonumber(getammo), tonumber(getammoclip))
+            TriggerServerEvent('rsg-weapons:server:updateammo', _currentSerial, tonumber(getammo))
         end
         return
     end
 
-    RSGCore.Functions.Notify(Lang:t('error.max_mmo_capacity'), 'error')
+    lib.notify({ title = Lang:t('error.max_mmo_capacity'), type = 'error', duration = 5000 })
+
 end)
 
 -- update ammo loop
@@ -325,14 +332,13 @@ CreateThread(function()
     while true do
         local ped = PlayerPedId()
         local holdingweapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
-        if weaponInHands[holdingweapon] ~= nil and holdingweapon ~= -1569615261 then
-            local IsGun = Citizen.InvokeNative(0x705BE297EEBDB95D, holdingweapon)
-            if IsGun then
-                local currentammo = GetAmmoInPedWeapon(ped, holdingweapon)
-                local currentammoclip = GetAmmoInClip(ped, holdingweapon)
-                TriggerServerEvent('rsg-weapons:server:updateammo', weaponInHands[holdingweapon], tonumber(currentammo), tonumber(currentammoclip))
+            if weaponInHands[holdingweapon] ~= nil and holdingweapon ~= -1569615261 then
+                local IsGun = Citizen.InvokeNative(0x705BE297EEBDB95D, holdingweapon)
+                if IsGun then
+                    local currentammo = GetAmmoInPedWeapon(ped, holdingweapon)
+                    TriggerServerEvent('rsg-weapons:server:updateammo', weaponInHands[holdingweapon], tonumber(currentammo))
+                end
             end
-        end
         Wait(1000)
     end
 end)

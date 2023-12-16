@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS `player_weapons` (
     `citizenid` varchar(9) NOT NULL,
     `components` varchar(4096) NOT NULL DEFAULT '{}',
     `ammo` int(3) NOT NULL DEFAULT 0,
-    `ammoclip` int(3) NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

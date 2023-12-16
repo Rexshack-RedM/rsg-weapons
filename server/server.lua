@@ -75,9 +75,8 @@ RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(so
 end)
 
 -- update ammo
-RegisterServerEvent('rsg-weapons:server:updateammo', function(serial, ammo, ammoclip)
+RegisterServerEvent('rsg-weapons:server:updateammo', function(serial, ammo)
     MySQL.update('UPDATE player_weapons SET ammo = ? WHERE serial = ?', { ammo, serial })
-    MySQL.update('UPDATE player_weapons SET ammoclip = ? WHERE serial = ?', { ammoclip, serial })
 end)
 
 -- remove ammo from player
@@ -87,7 +86,7 @@ AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
     local Player = RSGCore.Functions.GetPlayer(src)
     Player.Functions.RemoveItem(ammoitem, 1)
     TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[ammoitem], 'remove')
-    RSGCore.Functions.Notify(src, Lang:t('success.weapon_reloaded'), 'success')
+    TriggerClientEvent('ox_lib:notify', src, {title = Lang:t('success.weapon_reloaded'), type = 'success', duration = 5000 })
 end)
 
 RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amount)
@@ -140,7 +139,7 @@ RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
         end
     end
     Player.Functions.SetInventory(Player.PlayerData.items)
-    RSGCore.Functions.Notify(src, Lang:t('success.weapon_repaired'), 'success')
+    TriggerClientEvent('ox_lib:notify', src, {title = Lang:t('success.weapon_repaired'), type = 'success', duration = 5000 })
 end)
 
 --------------------------------------------------------------------------------------------------
