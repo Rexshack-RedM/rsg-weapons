@@ -243,7 +243,7 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     end
 
     if weapon == -1569615261 then
-        RSGCore.Functions.Notify(Lang:t('error.you_are_not_holding_weapon'), 'error')
+        lib.notify({ title = Lang:t('error.you_are_not_holding_weapon'), type = 'error', duration = 5000 })
         return
     end
 
