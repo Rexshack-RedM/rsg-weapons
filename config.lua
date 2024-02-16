@@ -5,7 +5,7 @@ Config.Debug = false
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
 Config.RepairTime = 30000
-
+Config.AmmoReloadKeybind = 'J'
 -- weapon degradation
 Config.DegradeRate = 0.01
 
