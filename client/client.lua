@@ -230,13 +230,12 @@ function HandleReload()
         local weaponData = RSGCore.Shared.Weapons[weaponHash]
         if weaponData then
             local ammoType = weaponData.ammotype
-            RSGCore.Functions.TriggerCallback('RSGCore:HasItem', function(hasAmmoItem)
-                if hasAmmoItem then
-                    TriggerEvent('rsg-weapons:client:AddAmmo', ammoType, 1, ammoType)
-                else
-                    lib.notify({ title = 'No Ammo For Weapon', type = 'error', duration = 5000 })
-                end
-            end, ammoType)
+            local hasAmmoItem = RSGCore.Functions.HasItem(string.lower(ammoType), 1)
+            if hasAmmoItem then
+                TriggerEvent('rsg-weapons:client:AddAmmo', ammoType, 1, ammoType)
+            else
+                lib.notify({ title = 'No Ammo For Weapon', type = 'error', duration = 5000 })
+            end
         else
             lib.notify({ title = Lang:t('error.weapon_not_recognized'), type = 'error', duration = 5000 })
         end
@@ -248,7 +247,7 @@ end
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if IsControlJustReleased(0, 0xE30CD707) then -- 0xE30CD707 is the control code for 'R'
+        if IsControlJustReleased(0, RSGCore.Shared.Keybinds[Config.AmmoReloadKeybind]) then
             HandleReload()
         end
     end
