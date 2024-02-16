@@ -223,6 +223,37 @@ AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
     end
 end)
 
+function HandleReload()
+    local ped = PlayerPedId()
+    local weaponHash = Citizen.InvokeNative(0x8425C5F057012DAB, ped) -- GetHashKey for the weapon the player is holding
+    if weaponHash and weaponHash ~= -1569615261 then 
+        local weaponData = RSGCore.Shared.Weapons[weaponHash]
+        if weaponData then
+            local ammoType = weaponData.ammotype
+            RSGCore.Functions.TriggerCallback('RSGCore:HasItem', function(hasAmmoItem)
+                if hasAmmoItem then
+                    TriggerEvent('rsg-weapons:client:AddAmmo', ammoType, 1, ammoType)
+                else
+                    lib.notify({ title = 'No Ammo For Weapon', type = 'error', duration = 5000 })
+                end
+            end, ammoType)
+        else
+            lib.notify({ title = Lang:t('error.weapon_not_recognized'), type = 'error', duration = 5000 })
+        end
+    else
+        lib.notify({ title = Lang:t('error.you_are_not_holding_weapon'), type = 'error', duration = 5000 })
+    end
+end
+
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+        if IsControlJustReleased(0, 0xE30CD707) then -- 0xE30CD707 is the control code for 'R'
+            HandleReload()
+        end
+    end
+end)
+
 -- load ammo
 RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     local ped = PlayerPedId()
