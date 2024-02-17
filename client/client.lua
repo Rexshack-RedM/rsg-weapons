@@ -224,6 +224,10 @@ AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
 end)
 
 function HandleReload()
+    if not Config.EasyReload then
+        return
+    end
+
     local ped = PlayerPedId()
     local weaponHash = Citizen.InvokeNative(0x8425C5F057012DAB, ped) -- GetHashKey for the weapon the player is holding
     if weaponHash and weaponHash ~= -1569615261 then 
