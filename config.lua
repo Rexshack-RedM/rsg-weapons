@@ -5,7 +5,8 @@ Config.Debug = false
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
 Config.RepairTime = 30000
-Config.AmmoReloadKeybind = 'J'
+Config.EasyReload = true        -- Set to false if you want to disable easy reload
+Config.AmmoReloadKeybind = 'R'
 -- weapon degradation
 Config.DegradeRate = 0.01
 
