@@ -5,6 +5,8 @@ local Translations = {
         wrong_ammo_for_weapon = 'wrong ammo for weapon!',
         you_are_not_holding_weapon = 'you are not holding a weapon!',
         weapon_degraded = 'weapon is degraded!',
+        no_weapon_found = 'No Weapon Found',
+        no_weapon_found_desc = 'you must be holding the weapon',
     },
     success = {
         weapon_reloaded = 'Weapon Reloaded',

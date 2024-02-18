@@ -29,10 +29,9 @@ local function CheckVersion()
     end)
 end
 
------------------------------------------------------------------------
-
+------------------------------------------
 -- start of use ammo
-
+------------------------------------------
 RSGCore.Functions.CreateUseableItem('ammo_revolver', function(source, item)
     TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_REVOLVER', Config.AmountRevolverAmmo, item)
 end)
@@ -65,21 +64,32 @@ RSGCore.Functions.CreateUseableItem('ammo_rifle_elephant', function(source, item
     TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_RIFLE_ELEPHANT', Config.AmountRifleAmmo, item)
 end)
 
--- end of use ammo
+------------------------------------------
+-- use weapon repair kit
+------------------------------------------
+RSGCore.Functions.CreateUseableItem('weapon_repair_kit', function(source, item)
+    TriggerClientEvent('rsg-weapons:client:repairweapon', source)
+end)
 
+------------------------------------------
 -- callback to get weapon info
+------------------------------------------
 RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(source, cb, weaponserial)
     local weaponinfo = MySQL.query.await('SELECT * FROM player_weapons WHERE serial=@weaponserial', { ['@weaponserial'] = weaponserial })
     if weaponinfo[1] == nil then return end
     cb(weaponinfo)
 end)
 
+------------------------------------------
 -- update ammo
+------------------------------------------
 RegisterServerEvent('rsg-weapons:server:updateammo', function(serial, ammo)
     MySQL.update('UPDATE player_weapons SET ammo = ? WHERE serial = ?', { ammo, serial })
 end)
 
+------------------------------------------
 -- remove ammo from player
+------------------------------------------
 RegisterServerEvent('rsg-weapons:server:removeWeaponAmmoItem')
 AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
     local src = source
@@ -95,7 +105,9 @@ RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amo
     Player.Functions.RemoveItem(weaponName, amount)
 end)
 
--- Degrade Weapon
+------------------------------------------
+-- degrade weapon
+------------------------------------------
 RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
@@ -120,7 +132,9 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
     Player.Functions.SetInventory(Player.PlayerData.items)
 end)
 
--- Components Loader
+------------------------------------------
+-- components loader
+------------------------------------------
 RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
@@ -149,7 +163,9 @@ RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
     TriggerClientEvent('rsg-weapon:client:LoadComponents', src, components, hash)
 end)
 
+------------------------------------------
 -- repair weapon
+------------------------------------------
 RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
@@ -165,6 +181,17 @@ RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
     end
     Player.Functions.SetInventory(Player.PlayerData.items)
     TriggerClientEvent('ox_lib:notify', src, {title = Lang:t('success.weapon_repaired'), type = 'success', duration = 5000 })
+end)
+
+---------------------------------------------
+-- remove item
+---------------------------------------------
+RegisterServerEvent('rsg-weapons:server:removeitem')
+AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    Player.Functions.RemoveItem(item, amount)
+    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "remove")
 end)
 
 --------------------------------------------------------------------------------------------------

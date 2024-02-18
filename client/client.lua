@@ -4,13 +4,18 @@ local UsedWeapons = {}
 local EquippedWeapons = {}
 local weaponInHands = {}
 
+------------------------------------------
+-- equiped weapons export
+------------------------------------------
 exports('EquippedWeapons', function()
     if EquippedWeapons ~= nil then
         return EquippedWeapons
     end
 end)
 
--- Models Loader
+------------------------------------------
+-- models loader
+------------------------------------------
 local LoadModel = function(model)
     if not IsModelInCdimage(model) then
         return false
@@ -79,6 +84,9 @@ local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, 
     return Citizen.InvokeNative(0x74C9090FDD1BB48E, entity, componentHash, weaponHash, p3)
 end
 
+------------------------------------------
+-- auto dual-wield
+------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
     local ped = PlayerPedId()
 
@@ -90,6 +98,9 @@ RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
     Citizen.InvokeNative(0x83B8D50EB9446BBA, ped, true)
 end)
 
+------------------------------------------
+-- use weapon
+------------------------------------------
 RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local ped = PlayerPedId()
     local weaponName = tostring(weaponData.name)
@@ -217,7 +228,9 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     end, wepSerial)
 end)
 
--- Components Loader
+------------------------------------------
+-- weapon components loader
+------------------------------------------
 RegisterNetEvent("rsg-weapon:client:LoadComponents")
 AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
     Wait(500)
@@ -235,6 +248,9 @@ AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
     end
 end)
 
+------------------------------------------
+-- reload weapon function
+------------------------------------------
 function HandleReload()
     if not Config.EasyReload then
         return
@@ -260,6 +276,9 @@ function HandleReload()
     end
 end
 
+------------------------------------------
+-- reload weapon by keybind
+------------------------------------------
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
@@ -269,6 +288,9 @@ Citizen.CreateThread(function()
     end
 end)
 
+------------------------------------------
+-- degrade weapon when shooting
+------------------------------------------
 CreateThread(function()
     while true do
         Wait(1)
@@ -284,7 +306,9 @@ CreateThread(function()
     end
 end)
 
+------------------------------------------
 -- load ammo
+------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
     local ped = PlayerPedId()
     local weapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
@@ -387,7 +411,9 @@ RegisterNetEvent('rsg-weapons:client:AddAmmo', function(ammotype, amount, ammo)
 
 end)
 
+------------------------------------------
 -- update ammo loop
+------------------------------------------
 CreateThread(function()
     SetWeaponsNoAutoswap(true)
     while true do
@@ -404,7 +430,9 @@ CreateThread(function()
     end
 end)
 
-
+------------------------------------------
+-- set weapon damage modifier
+------------------------------------------
 Citizen.CreateThread(function()
     while true do
         Wait(1)
@@ -416,23 +444,34 @@ Citizen.CreateThread(function()
     end
 end)
 
-------------------------------------------------------------------------------------------------------
--- weaponsmith : weapon repair
-------------------------------------------------------------------------------------------------------
-
+------------------------------------------
+-- repair weapon
+------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairweapon', function()
     local ped = PlayerPedId()
     local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
-    if currentserial ~= nil and heldWeapon ~= -1569615261 then
-        RSGCore.Functions.Progressbar('do-repair', Lang:t('progressbar.repairing_weapon'), Config.RepairTime, false, true, {
-            disableMovement = true,
-            disableCarMovement = false,
-            disableMouse = false,
-            disableCombat = true,
-        }, {}, {}, {}, function() -- Done
-            TriggerServerEvent('rsg-weapons:server:repairweapon', currentserial)
-        end)
+    local currentSerial = weaponInHands[heldWeapon]
+    if currentSerial ~= nil and heldWeapon ~= -1569615261 then
+        lib.progressBar({
+            duration = Config.RepairTime,
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = false,
+            disableControl = true,
+            label = Lang:t('progressbar.repairing_weapon'),
+        })
+        TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
+        TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
+    else
+        lib.notify(
+            { 
+                title = Lang:t('error.no_weapon_found'),
+                description = Lang:t('error.no_weapon_found_desc'),
+                type = 'inform',
+                icon = 'fa-solid fa-gun',
+                iconAnimation = 'shake',
+                duration = 7000
+            }
+        )
     end
 end)
-
-------------------------------------------------------------------------------------------------------
