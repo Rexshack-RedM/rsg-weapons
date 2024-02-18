@@ -95,6 +95,31 @@ RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amo
     Player.Functions.RemoveItem(weaponName, amount)
 end)
 
+-- Degrade Weapon
+RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    local svslot = nil
+    local itemData
+    for v,k in pairs(Player.PlayerData.items) do
+        if k.type == 'weapon' then
+            if k.info.serie == serie then
+                svslot = k.slot
+
+                -- weapon quality update
+                local newquality = (Player.PlayerData.items[svslot].info.quality - Config.DegradeRate)
+                Player.PlayerData.items[svslot].info.quality = newquality
+
+                if Player.PlayerData.items[svslot].info.quality <= 0 then
+                    print(Player.PlayerData.items[svslot])
+                    TriggerClientEvent("rsg-weapons:client:UseWeapon", src, Player.PlayerData.items[svslot])
+                end
+            end
+        end
+    end
+    Player.Functions.SetInventory(Player.PlayerData.items)
+end)
+
 -- Components Loader
 RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
     local src = source

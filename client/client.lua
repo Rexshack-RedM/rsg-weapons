@@ -200,6 +200,18 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             weaponInHands[hash] = wepSerial
 
         else
+            RemoveWeaponFromPed(ped,hash)
+            UsedWeapons[tonumber(hash)] = nil
+
+            for i = 1, #EquippedWeapons do
+                local usedHash = EquippedWeapons[i]
+
+                if hash == usedHash then
+                    EquippedWeapons[i] = nil
+                    alreadyUsed = false
+                end
+            end
+
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
         end
     end, wepSerial)
@@ -253,6 +265,21 @@ Citizen.CreateThread(function()
         Citizen.Wait(0)
         if IsControlJustReleased(0, RSGCore.Shared.Keybinds[Config.AmmoReloadKeybind]) then
             HandleReload()
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(1)
+        local ped = PlayerPedId()
+        if IsPedShooting(ped) then
+            local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+            local currentSerial = weaponInHands[heldWeapon]
+
+            if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
+                TriggerServerEvent('rsg-weapons:server:degradeWeapon', currentSerial)
+            end
         end
     end
 end)
