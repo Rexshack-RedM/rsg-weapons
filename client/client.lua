@@ -223,7 +223,9 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 end
             end
 
+            TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
+
         end
     end, wepSerial)
 end)
@@ -467,6 +469,60 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
             { 
                 title = Lang:t('error.no_weapon_found'),
                 description = Lang:t('error.no_weapon_found_desc'),
+                type = 'inform',
+                icon = 'fa-solid fa-gun',
+                iconAnimation = 'shake',
+                duration = 7000
+            }
+        )
+    end
+end)
+
+------------------------------------------
+-- broken repair weapon choice yes/no
+------------------------------------------
+RegisterNetEvent('rsg-weapons:client:brokenweapon', function(serial)
+    local input = lib.inputDialog('Repair Weapon', {
+        { 
+            type = 'select',
+            label = 'Repair Weapon',
+            options = { 
+                { value = 'yes', text = 'Yes' }, 
+                { value = 'no', text = 'No' }  
+            },
+            required = true
+        },
+    })
+
+    if not input then return end
+
+    if input[1] == 'yes' then
+        TriggerEvent('rsg-weapons:client:repairbrokenweapon', serial)
+    end
+end)
+
+------------------------------------------
+-- repair broken weapon
+------------------------------------------
+RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
+    local ped = PlayerPedId()
+    local hasItem = RSGCore.Functions.HasItem('weapon_repair_kit', 1)
+    if hasItem and serial ~= nil then
+        lib.progressBar({
+            duration = Config.RepairTime,
+            position = 'bottom',
+            useWhileDead = false,
+            canCancel = false,
+            disableControl = true,
+            label = Lang:t('progressbar.repairing_weapon'),
+        })
+        TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
+        TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
+    else
+        lib.notify(
+            { 
+                title = 'Item Needed',
+                description = 'weapon repair kit needed!',
                 type = 'inform',
                 icon = 'fa-solid fa-gun',
                 iconAnimation = 'shake',
