@@ -14,6 +14,15 @@ exports('EquippedWeapons', function()
 end)
 
 ------------------------------------------
+-- weapon in hands export
+------------------------------------------
+exports('weaponInHands', function()
+    if weaponInHands ~= nil then
+        return weaponInHands
+    end
+end)
+
+------------------------------------------
 -- models loader
 ------------------------------------------
 local LoadModel = function(model)
