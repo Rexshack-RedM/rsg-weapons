@@ -20,7 +20,7 @@ Config.MaxVarmintAmmo = 28
 Config.MaxShotgunAmmo = 12
 
 -- amount of ammo per load
-Config.AmountArrowAmmo = 12
+Config.AmountArrowAmmo = 8
 Config.AmountRevolverAmmo = 12
 Config.AmountPistolAmmo = 12
 Config.AmountRepeaterAmmo = 12

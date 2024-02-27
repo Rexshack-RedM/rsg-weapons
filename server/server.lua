@@ -30,41 +30,6 @@ local function CheckVersion()
 end
 
 ------------------------------------------
--- start of use ammo
-------------------------------------------
-RSGCore.Functions.CreateUseableItem('ammo_revolver', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_REVOLVER', Config.AmountRevolverAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_pistol', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_PISTOL', Config.AmountPistolAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_repeater', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_REPEATER', Config.AmountRepeaterAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_rifle', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_RIFLE', Config.AmountRifleAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_shotgun', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_SHOTGUN', Config.AmountShotgunAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_arrow', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_ARROW', Config.AmountArrowAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_varmint', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_22', Config.AmountRifleAmmo, item)
-end)
-
-RSGCore.Functions.CreateUseableItem('ammo_rifle_elephant', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:AddAmmo', source, 'AMMO_RIFLE_ELEPHANT', Config.AmountRifleAmmo, item)
-end)
-
-------------------------------------------
 -- use weapon repair kit
 ------------------------------------------
 RSGCore.Functions.CreateUseableItem('weapon_repair_kit', function(source, item)
@@ -78,13 +43,6 @@ RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(so
     local weaponinfo = MySQL.query.await('SELECT * FROM player_weapons WHERE serial=@weaponserial', { ['@weaponserial'] = weaponserial })
     if weaponinfo[1] == nil then return end
     cb(weaponinfo)
-end)
-
-------------------------------------------
--- update ammo
-------------------------------------------
-RegisterServerEvent('rsg-weapons:server:updateammo', function(serial, ammo)
-    MySQL.update('UPDATE player_weapons SET ammo = ? WHERE serial = ?', { ammo, serial })
 end)
 
 ------------------------------------------
