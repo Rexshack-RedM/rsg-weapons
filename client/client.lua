@@ -253,7 +253,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_EXPRESS'), ammo_express, 0xCA3454E6)
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
                 end
-                if string.find(weaponName, 'rifle') and not weaponName == 'weapon_rifle_elephant' and not weaponName == 'weapon_rifle_varmint' then
+                if string.find(weaponName, 'rifle') and weaponName ~= 'weapon_rifle_elephant' and weaponName ~= 'weapon_rifle_varmint' then
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE'), ammo, 0xCA3454E6)
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
                     Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
