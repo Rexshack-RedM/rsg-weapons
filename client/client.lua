@@ -160,53 +160,53 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     if ammo == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW'), Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW'), Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
                             lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
                         end
                     else
-                        Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW'), ammo, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW'), ammo, 0xCA3454E6)
                     end
 
                     if ammo_fire == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_fire', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_FIRE'), Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_FIRE'), Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
                             lib.notify({ title = 'No Fire Arrows', type = 'error', duration = 5000 })
                         end
                     else
-                        Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_FIRE'), ammo_fire, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_FIRE'), ammo_fire, 0xCA3454E6)
                     end
 
                     if ammo_poison == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_poison', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_POISON'), Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_POISON'), Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
                             lib.notify({ title = 'No Poison Arrows', type = 'error', duration = 5000 })
                         end
                     else
-                        Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_POISON'), ammo_poison, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_POISON'), ammo_poison, 0xCA3454E6)
                     end
 
                     if ammo_dynamite == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_dynamite', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_DYNAMITE'), Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_DYNAMITE'), Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
                             lib.notify({ title = 'No Dynamite Arrows', type = 'error', duration = 5000 })
                         end
                     else
-                        Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_ARROW_DYNAMITE'), ammo_dynamite, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_ARROW_DYNAMITE'), ammo_dynamite, 0xCA3454E6)
                     end
 
                     Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
@@ -219,59 +219,59 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                      if ammo == nil then
                         ammo = 0
                     end 
-                    --local _currentAmmo = loadedAmmo[wepSerial]
                     Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
                 end
                 if  string.find(weaponName, 'thrown') then
                     local _ammoType = Config.AmmoTypes[weaponName]
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
                 else
                     if ammo == nil then
                         ammo = 0
                     end
-                    Citizen.InvokeNative(0x14E56BC5B5DB6A19, ped, hash, ammo)
                 end
 
+                Citizen.InvokeNative(0xDCD2A934D65CB497, ped, hash, 0)
+
                 if string.find(weaponName, 'revolver') then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REVOLVER'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REVOLVER_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REVOLVER_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REVOLVER_EXPRESS'), ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REVOLVER_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REVOLVER'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REVOLVER_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REVOLVER_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REVOLVER_EXPRESS'), ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REVOLVER_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'pistol') then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_PISTOL'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_PISTOL_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_PISTOL_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_PISTOL_EXPRESS'), ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_PISTOL_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_PISTOL'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_PISTOL_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_PISTOL_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_PISTOL_EXPRESS'), ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_PISTOL_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'repeater') then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_EXPRESS'), ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_REPEATER_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REPEATER'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REPEATER_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REPEATER_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REPEATER_EXPRESS'), ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_REPEATER_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'rifle') and weaponName ~= 'weapon_rifle_elephant' and weaponName ~= 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_EXPRESS'), ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE_HIGH_VELOCITY'), ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE_SPLIT_POINT'), ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE_EXPRESS'), ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE_EXPRESS_EXPLOSIVE'), ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'shotgun') then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_SHOTGUN'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_SHOTGUN_BUCKSHOT_INCENDIARY'), ammo_buckshot_incendiary, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_SHOTGUN_SLUG'), ammo_slug, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_SHOTGUN_SLUG_EXPLOSIVE'), ammo_slug_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_SHOTGUN'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_SHOTGUN_BUCKSHOT_INCENDIARY'), ammo_buckshot_incendiary, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_SHOTGUN_SLUG'), ammo_slug, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_SHOTGUN_SLUG_EXPLOSIVE'), ammo_slug_explosive, 0xCA3454E6)
                 end
                 if weaponName == 'weapon_rifle_elephant' then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_RIFLE_ELEPHANT'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_RIFLE_ELEPHANT'), ammo, 0xCA3454E6)
                 end
                 if weaponName == 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_22'), ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x106A811C6D3035F3, ped, joaat('AMMO_22_TRANQUILIZER'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_22'), ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, joaat('AMMO_22_TRANQUILIZER'), ammo, 0xCA3454E6)
                 end
 
                 if Config.Debug then
@@ -280,9 +280,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 end
 
                 weaponInHands[hash] = wepSerial
-
                 TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
-
                 SetCurrentPedWeapon(ped,hash,true)
 
             else
