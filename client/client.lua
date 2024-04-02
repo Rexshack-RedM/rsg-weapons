@@ -97,21 +97,20 @@ end
 -- auto dual-wield
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
-    local ped = cache.ped
+    
 
     addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
     addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
 
     Citizen.InvokeNative(0x1B7C5ADA8A6910A0, `SP_WEAPON_DUALWIELD`, true)
     Citizen.InvokeNative(0x46B901A8ECDB5A61, `SP_WEAPON_DUALWIELD`, true)
-    Citizen.InvokeNative(0x83B8D50EB9446BBA, ped, true)
+    Citizen.InvokeNative(0x83B8D50EB9446BBA, cache.ped, true)
 end)
 
 ------------------------------------------
 -- use weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
-    local ped = cache.ped
     local weaponName = tostring(weaponData.name)
     local hash = joaat(weaponData.name)
     local wepSerial = tostring(weaponData.info.serie)
@@ -160,52 +159,52 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     if ammo == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW`, Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW`, ammo, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW`, ammo, 0xCA3454E6)
                     end
 
                     if ammo_fire == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_fire', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_FIRE`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_FIRE`, Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_FIRE`, ammo_fire, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_FIRE`, ammo_fire, 0xCA3454E6)
                     end
 
                     if ammo_poison == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_poison', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_POISON`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_POISON`, Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_POISON`, ammo_poison, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_POISON`, ammo_poison, 0xCA3454E6)
                     end
 
                     if ammo_dynamite == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_dynamite', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_DYNAMITE`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_DYNAMITE`, Config.AmountArrowAmmo, 0xCA3454E6)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite, 0xCA3454E6)
+                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite, 0xCA3454E6)
                     end
 
-                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
+                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, cache.ped, hash, 0, false, true)
 
                     if ammo == 0 and ammo_fire == 0 and ammo_poison == 0 and ammo_dynamite == 0 then
                         lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
@@ -213,65 +212,65 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
                 --check throwables weapons
                 elseif string.find(weaponName, 'thrown') then
-                    GiveWeaponToPed_2(ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
+                    GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
                 else
                      if ammo == nil then
                         ammo = 0
                     end 
-                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, ped, hash, 0, false, true)
+                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, cache.ped, hash, 0, false, true)
                 end
                 if  string.find(weaponName, 'thrown') then
                     local _ammoType = Config.AmmoTypes[weaponName]
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
                 else
                     if ammo == nil then
                         ammo = 0
                     end
                 end
 
-                Citizen.InvokeNative(0xDCD2A934D65CB497, ped, hash, 0)
+                Citizen.InvokeNative(0xDCD2A934D65CB497, cache.ped, hash, 0)
 
                 if string.find(weaponName, 'revolver') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REVOLVER`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REVOLVER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REVOLVER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REVOLVER_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REVOLVER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_EXPRESS`, ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'pistol') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_PISTOL`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_PISTOL_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_PISTOL_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_PISTOL_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_PISTOL_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_EXPRESS`, ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'repeater') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REPEATER`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REPEATER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REPEATER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REPEATER_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_REPEATER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_EXPRESS`, ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'rifle') and weaponName ~= 'weapon_rifle_elephant' and weaponName ~= 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_EXPRESS`, ammo_express, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
                 end
                 if string.find(weaponName, 'shotgun') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_SHOTGUN`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_SHOTGUN_BUCKSHOT_INCENDIARY`, ammo_buckshot_incendiary, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_SHOTGUN_SLUG`, ammo_slug, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_SHOTGUN_SLUG_EXPLOSIVE`, ammo_slug_explosive, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_BUCKSHOT_INCENDIARY`, ammo_buckshot_incendiary, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_SLUG`, ammo_slug, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_SLUG_EXPLOSIVE`, ammo_slug_explosive, 0xCA3454E6)
                 end
                 if weaponName == 'weapon_rifle_elephant' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_RIFLE_ELEPHANT`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_ELEPHANT`, ammo, 0xCA3454E6)
                 end
                 if weaponName == 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_22`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, ped, `AMMO_22_TRANQUILIZER`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_22`, ammo, 0xCA3454E6)
+                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_22_TRANQUILIZER`, ammo, 0xCA3454E6)
                 end
 
                 if Config.Debug then
@@ -281,11 +280,11 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
                 weaponInHands[hash] = wepSerial
                 TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
-                SetCurrentPedWeapon(ped,hash,true)
+                SetCurrentPedWeapon(cache.ped,hash,true)
 
             else
                 print('removing weapon ')
-                RemoveWeaponFromPed(ped,hash)
+                RemoveWeaponFromPed(cache.ped,hash)
                 UsedWeapons[tonumber(hash)] = nil
 
                 for i = 1, #EquippedWeapons do
@@ -311,7 +310,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             weaponInHands[hash] = wepSerial
 
         else
-            RemoveWeaponFromPed(ped,hash)
+            RemoveWeaponFromPed(cache.ped,hash)
             UsedWeapons[tonumber(hash)] = nil
 
             for i = 1, #EquippedWeapons do
@@ -356,9 +355,8 @@ end)
 CreateThread(function()
     while true do
         Wait(1)
-        local ped = cache.ped
-        if IsPedShooting(ped) then
-            local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+        if IsPedShooting(cache.ped) then
+            local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped)
             local currentSerial = weaponInHands[heldWeapon]
 
             if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
@@ -371,7 +369,7 @@ end)
 ------------------------------------------
 -- set weapon damage modifier
 ------------------------------------------
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
         Wait(1)
         SetPlayerWeaponDamageModifier(PlayerId(),Config.WeaponDmg)
@@ -386,8 +384,8 @@ end)
 -- repair weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairweapon', function()
-    local ped = cache.ped
-    local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, ped)
+
+    local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped)
     local currentSerial = weaponInHands[heldWeapon]
     if currentSerial ~= nil and heldWeapon ~= -1569615261 then
         lib.progressBar({
@@ -441,7 +439,6 @@ end)
 -- repair broken weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
-    local ped = cache.ped
     local hasItem = RSGCore.Functions.HasItem('weapon_repair_kit', 1)
     if hasItem and serial ~= nil then
         lib.progressBar({
