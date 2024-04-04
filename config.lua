@@ -45,3 +45,4 @@ Config.AmmoTypes = {
     ['weapon_thrown_poisonbottle'] = `AMMO_POISONBOTTLE`
 }
 
+RSGCore = exports['rsg-core']:GetCoreObject()

@@ -1,4 +1,3 @@
-local RSGCore = exports['rsg-core']:GetCoreObject()
 local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
@@ -22,23 +21,6 @@ exports('weaponInHands', function()
     end
 end)
 
-------------------------------------------
--- models loader
-------------------------------------------
-local LoadModel = function(model)
-    if not IsModelInCdimage(model) then
-        return false
-    end
-
-    RequestModel(model)
-
-    while not HasModelLoaded(model) do
-        Wait(0)
-    end
-
-    return true
-end
-
 local getGuidFromItemId = function(inventoryId, itemData, category, slotId)
     local outItem = DataView.ArrayBuffer(8 * 13)
 
@@ -46,7 +28,7 @@ local getGuidFromItemId = function(inventoryId, itemData, category, slotId)
         itemData = 0
     end
 
-    local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer())
+    local success = InventoryGetGuidFromItemid(inventoryId, itemData, category, slotId, outItem:Buffer())
 
     if success then
         return outItem:Buffer()
@@ -59,7 +41,7 @@ local addWardrobeInventoryItem = function(itemName, slotHash)
     local itemHash = joaat(itemName)
     local addReason = `ADD_REASON_DEFAULT`
     local inventoryId = 1
-    local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, itemHash, 0)
+    local isValid = ItemdatabaseIsKeyValid(itemHash, 0)
 
     if not isValid then
         return false
@@ -78,33 +60,32 @@ local addWardrobeInventoryItem = function(itemName, slotHash)
     end
 
     local itemData = DataView.ArrayBuffer(8 * 13)
-    local isAdded = Citizen.InvokeNative(0xCB5D11F9508A928D, inventoryId, itemData:Buffer(), wardrobeItem, itemHash, slotHash, 1, addReason)
+    local isAdded = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), wardrobeItem, itemHash, slotHash, 1, addReason)
 
     if not isAdded then
         return false
     end
 
-    local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
+    local equipped = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), true)
 
     return equipped
 end
 
 local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, p3)
-    return Citizen.InvokeNative(0x74C9090FDD1BB48E, entity, componentHash, weaponHash, p3)
+    return GiveWeaponComponentToEntity(entity, componentHash, weaponHash, p3)
 end
 
 ------------------------------------------
 -- auto dual-wield
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
-    
 
     addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
     addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
 
-    Citizen.InvokeNative(0x1B7C5ADA8A6910A0, `SP_WEAPON_DUALWIELD`, true)
-    Citizen.InvokeNative(0x46B901A8ECDB5A61, `SP_WEAPON_DUALWIELD`, true)
-    Citizen.InvokeNative(0x83B8D50EB9446BBA, cache.ped, true)
+    UnlockSetUnlocked(`SP_WEAPON_DUALWIELD`, true)
+    UnlockSetVisible(`SP_WEAPON_DUALWIELD`, true)
+    SetAllowDualWield(cache.ped, true)
 end)
 
 ------------------------------------------
@@ -115,8 +96,8 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local hash = joaat(weaponData.name)
     local wepSerial = tostring(weaponData.info.serie)
     local wepQuality = weaponData.info.quality
-    
-    RSGCore.Functions.TriggerCallback('rsg-weapons:server:getweaponinfo', function(results)
+
+    lib.callback.await('rsg-weapons:server:getweaponinfo', false, function(results)
 
         local ammo = results[1].ammo
         local ammo_high_velocity = results[1].ammo_high_velocity
@@ -132,7 +113,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         local ammo_dynamite = results[1].ammo_dynamite
 
         if wepQuality > 1 then
-            
+
             for i = 1, #EquippedWeapons do
                 local usedHash = EquippedWeapons[i]
 
@@ -159,52 +140,52 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     if ammo == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            SetPedAmmoByType(cache.ped, `AMMO_ARROW`, Config.AmountArrowAmmo)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW`, ammo, 0xCA3454E6)
+                        SetPedAmmoByType(cache.ped, `AMMO_ARROW`, ammo)
                     end
 
                     if ammo_fire == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_fire', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_FIRE`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            SetPedAmmoByType(cache.ped, `AMMO_ARROW_FIRE`, Config.AmountArrowAmmo)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_FIRE`, ammo_fire, 0xCA3454E6)
+                        SetPedAmmoByType(cache.ped, `AMMO_ARROW_FIRE`, ammo_fire)
                     end
 
                     if ammo_poison == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_poison', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_POISON`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            SetPedAmmoByType(cache.ped, `AMMO_ARROW_POISON`, Config.AmountArrowAmmo)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_POISON`, ammo_poison, 0xCA3454E6)
+                        SetPedAmmoByType(cache.ped, `AMMO_ARROW_POISON`, ammo_poison)
                     end
 
                     if ammo_dynamite == 0 then
                         local hasItem = RSGCore.Functions.HasItem('ammo_arrow_dynamite', 1)
                         if hasItem then
-                            Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_DYNAMITE`, Config.AmountArrowAmmo, 0xCA3454E6)
+                            SetPedAmmoByType(cache.ped, `AMMO_ARROW_DYNAMITE`, Config.AmountArrowAmmo)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
                         end
                     else
-                        Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite, 0xCA3454E6)
+                        SetPedAmmoByType(cache.ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite)
                     end
 
-                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, cache.ped, hash, 0, false, true)
+                    GiveWeaponToPed(cache.ped, hash, 0, false, true)
 
                     if ammo == 0 and ammo_fire == 0 and ammo_poison == 0 and ammo_dynamite == 0 then
                         lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
@@ -212,65 +193,65 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
                 --check throwables weapons
                 elseif string.find(weaponName, 'thrown') then
-                    GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
+                    GiveWeaponToPed(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
                 else
                      if ammo == nil then
                         ammo = 0
                     end 
-                    Citizen.InvokeNative(0x5E3BDDBCB83F3D84, cache.ped, hash, 0, false, true)
+                    GiveWeaponToPed(cache.ped, hash, 0, false, true)
                 end
                 if  string.find(weaponName, 'thrown') then
                     local _ammoType = Config.AmmoTypes[weaponName]
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
+                    SetPedAmmoByType(cache.ped, _ammoType, Config.AmountThrowablesAmmo)
                 else
                     if ammo == nil then
                         ammo = 0
                     end
                 end
 
-                Citizen.InvokeNative(0xDCD2A934D65CB497, cache.ped, hash, 0)
+                SetAmmoInClip(cache.ped, hash, 0)
 
                 if string.find(weaponName, 'revolver') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REVOLVER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_REVOLVER`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_REVOLVER_HIGH_VELOCITY`, ammo_high_velocity)
+                    SetPedAmmoByType(cache.ped, `AMMO_REVOLVER_SPLIT_POINT`, ammo_split_point)
+                    SetPedAmmoByType(cache.ped, `AMMO_REVOLVER_EXPRESS`, ammo_express)
+                    SetPedAmmoByType(cache.ped, `AMMO_REVOLVER_EXPRESS_EXPLOSIVE`, ammo_express_explosive)
                 end
                 if string.find(weaponName, 'pistol') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_PISTOL_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_PISTOL`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_PISTOL_HIGH_VELOCITY`, ammo_high_velocity)
+                    SetPedAmmoByType(cache.ped, `AMMO_PISTOL_SPLIT_POINT`, ammo_split_point)
+                    SetPedAmmoByType(cache.ped, `AMMO_PISTOL_EXPRESS`, ammo_express)
+                    SetPedAmmoByType(cache.ped, `AMMO_PISTOL_EXPRESS_EXPLOSIVE`, ammo_express_explosive)
                 end
                 if string.find(weaponName, 'repeater') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_REPEATER_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_REPEATER`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_REPEATER_HIGH_VELOCITY`, ammo_high_velocity)
+                    SetPedAmmoByType(cache.ped, `AMMO_REPEATER_SPLIT_POINT`, ammo_split_point)
+                    SetPedAmmoByType(cache.ped, `AMMO_REPEATER_EXPRESS`, ammo_express)
+                    SetPedAmmoByType(cache.ped, `AMMO_REPEATER_EXPRESS_EXPLOSIVE`, ammo_express_explosive)
                 end
                 if string.find(weaponName, 'rifle') and weaponName ~= 'weapon_rifle_elephant' and weaponName ~= 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_HIGH_VELOCITY`, ammo_high_velocity, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_SPLIT_POINT`, ammo_split_point, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_EXPRESS`, ammo_express, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_EXPRESS_EXPLOSIVE`, ammo_express_explosive, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE_HIGH_VELOCITY`, ammo_high_velocity)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE_SPLIT_POINT`, ammo_split_point)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE_EXPRESS`, ammo_express)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE_EXPRESS_EXPLOSIVE`, ammo_express_explosive)
                 end
                 if string.find(weaponName, 'shotgun') then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_BUCKSHOT_INCENDIARY`, ammo_buckshot_incendiary, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_SLUG`, ammo_slug, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_SHOTGUN_SLUG_EXPLOSIVE`, ammo_slug_explosive, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_SHOTGUN`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_SHOTGUN_BUCKSHOT_INCENDIARY`, ammo_buckshot_incendiary)
+                    SetPedAmmoByType(cache.ped, `AMMO_SHOTGUN_SLUG`, ammo_slug)
+                    SetPedAmmoByType(cache.ped, `AMMO_SHOTGUN_SLUG_EXPLOSIVE`, ammo_slug_explosive)
                 end
                 if weaponName == 'weapon_rifle_elephant' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_RIFLE_ELEPHANT`, ammo, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_RIFLE_ELEPHANT`, ammo)
                 end
                 if weaponName == 'weapon_rifle_varmint' then
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_22`, ammo, 0xCA3454E6)
-                    Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, `AMMO_22_TRANQUILIZER`, ammo, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_22`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_22_TRANQUILIZER`, ammo_tranquilizer)
                 end
 
                 if Config.Debug then
@@ -301,10 +282,10 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             local object = GetObjectIndexFromEntityIndex(GetCurrentPedWeaponEntityIndex(cache.ped, 0))
             if not DoesEntityExist(object) then return end
             if wepQuality == 100 then
-                Citizen.InvokeNative(0xA7A57E89E965D839, object, 0.0)
+                SetWeaponDegradation(object, 0.0)
             else
                 local currentDeg = wepQuality / 100
-                Citizen.InvokeNative(0xA7A57E89E965D839, object, currentDeg)
+                SetWeaponDegradation(object, currentDeg)
             end
 
             weaponInHands[hash] = wepSerial
@@ -338,7 +319,7 @@ AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
 
     for i = 1, #components do
         if components[i].model ~= 0 then
-            LoadModel(components[i].model)
+            lib.requestModel(components[i].model)
         end
 
         GiveWeaponComponentToEntity(cache.ped, components[i].name, hash, true)
@@ -356,7 +337,7 @@ CreateThread(function()
     while true do
         Wait(1)
         if IsPedShooting(cache.ped) then
-            local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped)
+            local heldWeapon = GetPedCurrentHeldWeapon(cache.ped)
             local currentSerial = weaponInHands[heldWeapon]
 
             if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
@@ -372,9 +353,9 @@ end)
 CreateThread(function()
     while true do
         Wait(1)
-        SetPlayerWeaponDamageModifier(PlayerId(),Config.WeaponDmg)
-        SetPlayerMeleeWeaponDamageModifier(PlayerId(),Config.MeleeDmg)
-        if IsPlayerFreeAiming(PlayerId()) then
+        SetPlayerWeaponDamageModifier(cache.ped,Config.WeaponDmg)
+        SetPlayerMeleeWeaponDamageModifier(cache.ped,Config.MeleeDmg)
+        if IsPlayerFreeAiming(cache.ped) then
             DisableControlAction(0, 0x8FFC75D6, true)
         end
     end
@@ -385,7 +366,7 @@ end)
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairweapon', function()
 
-    local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped)
+    local heldWeapon = GetPedCurrentHeldWeapon(cache.ped)
     local currentSerial = weaponInHands[heldWeapon]
     if currentSerial ~= nil and heldWeapon ~= -1569615261 then
         lib.progressBar({
@@ -453,7 +434,7 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
         TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
     else
         lib.notify(
-            { 
+            {
                 title = 'Item Needed',
                 description = 'weapon repair kit needed!',
                 type = 'inform',
