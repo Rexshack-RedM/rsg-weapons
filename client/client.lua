@@ -398,18 +398,6 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
-    else
-        lib.notify(
-            { 
-                title = Lang:t('error.no_weapon_found'),
-                description = Lang:t('error.no_weapon_found_desc'),
-                type = 'inform',
-                icon = 'fa-solid fa-gun',
-                iconAnimation = 'shake',
-                duration = 7000
-            }
-        )
-    end
 end)
 
 ------------------------------------------
