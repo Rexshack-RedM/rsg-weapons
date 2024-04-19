@@ -4,31 +4,29 @@ Config.Debug = false
 Config.WeaponComponents = true -- true or false with script custom weapon (note with false can use /loadweapon for equiped) 
 
 -- settings
--- Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
+--Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
 Config.RepairTime = 30000
 
 -- weapon degradation
-Config.DegradeRate = 0.02
+Config.DegradeRate = 0.01
 
 -- limit the amount of ammo players can load
-Config.MaxArrowAmmo = 16
+Config.MaxArrowAmmo = 12
 Config.MaxRevolverAmmo = 12
-Config.MaxPistolAmmo = 20
-Config.MaxRepeaterAmmo = 30
-Config.MaxRifleAmmo = 20
-Config.MaxElephantAmmo = 18
-Config.MaxVarmintAmmo = 16
-Config.MaxShotgunAmmo = 10
+Config.MaxPistolAmmo = 12
+Config.MaxRepeaterAmmo = 12
+Config.MaxRifleAmmo = 12
+Config.MaxVarmintAmmo = 28
+Config.MaxShotgunAmmo = 12
 
 -- amount of ammo per load
 Config.AmountArrowAmmo = 8
-Config.AmountRevolverAmmo = 6
-Config.AmountPistolAmmo = 10
-Config.AmountRepeaterAmmo = 15
-Config.AmountRifleAmmo = 10
-Config.MaxElephantAmmo = 8
-Config.AmountVarmintAmmo = 8
-Config.AmountShotgunAmmo = 5
+Config.AmountRevolverAmmo = 12
+Config.AmountPistolAmmo = 12
+Config.AmountRepeaterAmmo = 12
+Config.AmountRifleAmmo = 12
+Config.AmountVarmintAmmo = 28
+Config.AmountShotgunAmmo = 12
 Config.AmountThrowablesAmmo = 1
 
 --- Damage Weapon
@@ -43,11 +41,7 @@ Config.AmmoTypes = {
     ['weapon_thrown_bolas_hawkmoth'] = `AMMO_BOLAS_HAWKMOTH`,
     ['weapon_thrown_bolas_ironspiked'] = `AMMO_BOLAS_IRONSPIKED`,
     ['weapon_thrown_bolas_intertwined']  = `AMMO_BOLAS_INTERTWINED`,
-
-    ['weapon_thrown_dynamite'] = `AMMO_DYNAMITE` or `ammo_voldynamite`,
-    ['weapon_thrown_molotov'] = `AMMO_MOLOTOV` or `ammo_volmolotov`,
-
+    ['weapon_thrown_dynamite'] = `AMMO_DYNAMITE`,
+    ['weapon_thrown_molotov'] = `AMMO_MOLOTOV`,
     ['weapon_thrown_poisonbottle'] = `AMMO_POISONBOTTLE`
 }
-
-RSGCore = exports['rsg-core']:GetCoreObject()
