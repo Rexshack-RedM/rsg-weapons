@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `player_weapons` (
     `serial` varchar(16) NOT NULL,
     `citizenid` varchar(9) NOT NULL,
     `components` varchar(4096) NOT NULL DEFAULT '{}',
+    `components_before` varchar(4096) NOT NULL DEFAULT '{}',
     `ammo` int(3) NOT NULL DEFAULT 0,
     `ammo_express` int(3) NOT NULL DEFAULT 0,
     `ammo_express_explosive` int(3) NOT NULL DEFAULT 0,
