@@ -10,7 +10,10 @@ local Translations = {
     },
     success = {
         weapon_reloaded = 'Weapon Reloaded',
-        weapon_repaired = 'Weapon Repaired',
+        weapon_repair = 'Repair Weapon',
+        reapir_yes = 'Yes',
+        item_need = 'Item Needed',
+        item_need_desc = 'weapon repair kit needed!',
     },
     primary = {
         var = 'text goes here',
