@@ -91,37 +91,6 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
 end)
 
 ------------------------------------------
--- components loader
-------------------------------------------
-RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    local citizenid = Player.PlayerData.citizenid
-    local ownerName = Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname
-
-    if Config.Debug then
-        print("Weapon Serial    : "..tostring(serial))
-        print("Weapon Owner     : "..tostring('('..citizenid..')'..ownerName))
-    end
-
-    local result = MySQL.Sync.fetchAll('SELECT * FROM player_weapons WHERE serial = @serial and citizenid = @citizenid',
-    {
-        serial = serial,
-        citizenid = citizenid
-    })
-
-    if result[1] == nil or result[1] == 0 then return end
-
-    local components = json.decode(result[1].components)
-
-    if Config.Debug then
-        print('Components       : "'..tostring(components))
-    end
-
-    TriggerClientEvent('rsg-weapon:client:LoadComponents', src, components, hash)
-end)
-
-------------------------------------------
 -- repair weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
