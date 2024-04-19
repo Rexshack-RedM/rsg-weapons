@@ -19,6 +19,10 @@ CREATE TABLE IF NOT EXISTS `player_weapons` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Sample add
+ALTER TABLE player_weapons
+ADD components_before varchar(4096) NOT NULL DEFAULT '{}';
+
 -- Sample Data
 INSERT INTO `player_weapons` (`id`, `serial`, `components`) VALUES
 (1, 'BM123456','[{"GRIP":"COMPONENT_PISTOL_MAUSER_GRIP_BURLED","SIGHT":"COMPONENT_PISTOL_MAUSER_SIGHT_WIDE"}]')
