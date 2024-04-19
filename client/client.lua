@@ -3,6 +3,7 @@ local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
 local weaponInHands = {}
+local currentWeaponSerial = nil
 
 ------------------------------------------
 -- equiped weapons export
@@ -11,6 +12,31 @@ exports('EquippedWeapons', function()
     if EquippedWeapons ~= nil then
         return EquippedWeapons
     end
+end)
+
+------------------------------------------
+-- Check Weapon Serial export
+------------------------------------------
+exports('CheckWeaponSerial', function()
+    local serial = nil
+    local hash = nil
+    local _, wepHash = GetCurrentPedWeapon(cache.ped, true, 0, true)
+
+    if currentWeaponSerial then
+        for k, v in pairs(weaponInHands) do
+            if tonumber(wepHash) == tonumber(k) then
+                hash = k
+                serial = v
+
+                break
+            end
+        end
+    end
+
+    print('^5Weapon Serial^7   : ^2'..tostring(serial)..'^7')
+    print('^5Weapon Hash^7     : ^2'..tostring(hash)..'^7')
+
+    return serial, hash
 end)
 
 ------------------------------------------
@@ -89,16 +115,10 @@ local addWardrobeInventoryItem = function(itemName, slotHash)
     return equipped
 end
 
-local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, p3)
-    return GiveWeaponComponentToEntity(entity, componentHash, weaponHash, p3)
-end
-
 ------------------------------------------
 -- auto dual-wield
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
-    
-
     addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
     addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
 
@@ -279,7 +299,12 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 end
 
                 weaponInHands[hash] = wepSerial
-                TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
+                        
+                if Config.WeaponComponents then        
+                    -- TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
+                    TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+                end
+
                 SetCurrentPedWeapon(cache.ped,hash,true)
 
             else
@@ -323,30 +348,14 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             end
 
             TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
+            if Config.WeaponComponents then 
+                TriggerServerEvent("rsg-weaponcomp:server:updateComponents", {}, weaponName, wepSerial) -- update SQL
+                TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+            end
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
 
         end
     end, wepSerial)
-end)
-
-------------------------------------------
--- weapon components loader
-------------------------------------------
-RegisterNetEvent("rsg-weapon:client:LoadComponents")
-AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
-    Wait(500)
-
-    for i = 1, #components do
-        if components[i].model ~= 0 then
-            LoadModel(components[i].model)
-        end
-
-        GiveWeaponComponentToEntity(cache.ped, components[i].name, hash, true)
-
-        if components[i].model ~= 0 then
-            SetModelAsNoLongerNeeded(components[i].model)
-        end
-    end
 end)
 
 ------------------------------------------
