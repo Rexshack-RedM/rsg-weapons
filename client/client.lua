@@ -301,7 +301,6 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 weaponInHands[hash] = wepSerial
                         
                 if Config.WeaponComponents then        
-                    -- TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
                     TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
                 end
 
