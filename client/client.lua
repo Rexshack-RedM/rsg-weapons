@@ -348,7 +348,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
             TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
             if Config.WeaponComponents then 
-                TriggerServerEvent("rsg-weaponcomp:server:updateComponents", {}, weaponName, wepSerial) -- update SQL
+                TriggerServerEvent("rsg-weaponcomp:server:removeComponents", {}, weaponName, wepSerial) -- update SQL
                 TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
             end
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
