@@ -182,7 +182,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
-                            lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
+                            -- lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW`, ammo, 0xCA3454E6)
@@ -195,7 +195,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
-                            lib.notify({ title = 'No Fire Arrows', type = 'error', duration = 5000 })
+                            -- lib.notify({ title = 'No Fire Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_FIRE`, ammo_fire, 0xCA3454E6)
@@ -208,7 +208,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
-                            lib.notify({ title = 'No Poison Arrows', type = 'error', duration = 5000 })
+                            -- lib.notify({ title = 'No Poison Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_POISON`, ammo_poison, 0xCA3454E6)
@@ -221,7 +221,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
-                            lib.notify({ title = 'No Dynamite Arrows', type = 'error', duration = 5000 })
+                            -- lib.notify({ title = 'No Dynamite Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite, 0xCA3454E6)
@@ -230,22 +230,23 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     GiveWeaponToPed(cache.ped, hash, 0, false, true)
 
                     if ammo == 0 and ammo_fire == 0 and ammo_poison == 0 and ammo_dynamite == 0 then
-                        lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
+                        -- lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
                     end
                 --check throwables weapons
                 elseif string.find(weaponName, 'thrown') then
                     GiveWeaponToPed(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
+                    -- GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
                 else
                      if ammo == nil then
                         ammo = 0
-                    end 
+                    end
                     --local _currentAmmo = loadedAmmo[wepSerial]
                     GiveWeaponToPed(cache.ped, hash, 0, false, true)
                 end
                 if  string.find(weaponName, 'thrown') then
                     local _ammoType = Config.AmmoTypes[weaponName]
-                    SetPedAmmoByType(cache.ped, _ammoType, Config.AmountThrowablesAmmo)
+                    SetPedAmmoByType(cache.ped, _ammoType, Config.AmountThrowablesAmmo, 752097756)
                 else
                     if ammo == nil then
                         ammo = 0
@@ -291,7 +292,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     SetPedAmmoByType(cache.ped, `AMMO_RIFLE_ELEPHANT`, ammo, 0xCA3454E6)
                 end
                 if weaponName == 'weapon_rifle_varmint' then
-                    SetPedAmmoByType(cache.ped, `AMMO_22`, ammo)
+                    SetPedAmmoByType(cache.ped, `AMMO_22`, ammo, 0xCA3454E6)
                     SetPedAmmoByType(cache.ped, `AMMO_22_TRANQUILIZER`, ammo_tranquilizer, 0xCA3454E6)
                 end
 

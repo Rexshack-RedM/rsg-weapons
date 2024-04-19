@@ -8,19 +8,23 @@ version '1.1.8'
 shared_scripts {
     '@ox_lib/init.lua',
     '@rsg-core/shared/locale.lua',
-    'locales/en.lua',
+    'locales/es.lua',
     'locales/*.lua',
     'config.lua',
 }
 
 client_scripts {
-    'client/dataview.lua',
-    'client/client.lua'
+    'client/*.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/server.lua',
+}
+
+dependencies {
+    'rsg-core',
+    'ox_lib',
 }
 
 lua54 'yes'
