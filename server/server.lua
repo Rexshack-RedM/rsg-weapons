@@ -5,22 +5,16 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 -----------------------------------------------------------------------
 local function versionCheckPrint(_type, log)
     local color = _type == 'success' and '^2' or '^1'
-
     print(('^5['..GetCurrentResourceName()..']%s %s^7'):format(color, log))
 end
 
 local function CheckVersion()
     PerformHttpRequest('https://raw.githubusercontent.com/Rexshack-RedM/rsg-weapons/main/version.txt', function(err, text, headers)
         local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version')
-
-        if not text then 
+        if not text then
             versionCheckPrint('error', 'Currently unable to run a version check.')
-            return 
+            return
         end
-
-        --versionCheckPrint('success', ('Current Version: %s'):format(currentVersion))
-        --versionCheckPrint('success', ('Latest Version: %s'):format(text))
-        
         if text == currentVersion then
             versionCheckPrint('success', 'You are running the latest version.')
         else
@@ -29,25 +23,19 @@ local function CheckVersion()
     end)
 end
 
-------------------------------------------
--- use weapon repair kit
-------------------------------------------
-RSGCore.Functions.CreateUseableItem('weapon_repair_kit', function(source, item)
-    TriggerClientEvent('rsg-weapons:client:repairweapon', source)
-end)
-
-------------------------------------------
+------------------------------------
 -- callback to get weapon info
-------------------------------------------
+-----------------------------------
 RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(source, cb, weaponserial)
+-- lib.callback.register('rsg-weapons:server:getweaponinfo', function(source, cb, weaponserial)
     local weaponinfo = MySQL.query.await('SELECT * FROM player_weapons WHERE serial=@weaponserial', { ['@weaponserial'] = weaponserial })
     if weaponinfo[1] == nil then return end
     cb(weaponinfo)
 end)
 
-------------------------------------------
+-----------------------------------
 -- remove ammo from player
-------------------------------------------
+-----------------------------------
 RegisterServerEvent('rsg-weapons:server:removeWeaponAmmoItem')
 AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
     local src = source
@@ -63,18 +51,17 @@ RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amo
     Player.Functions.RemoveItem(weaponName, amount)
 end)
 
-------------------------------------------
--- degrade weapon
-------------------------------------------
+-----------------------------------
+-- Degrade Weapon
+-----------------------------------
 RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     local svslot = nil
-    local itemData
-    for v,k in pairs(Player.PlayerData.items) do
-        if k.type == 'weapon' then
-            if k.info.serie == serie then
-                svslot = k.slot
+    for _, v in pairs(Player.PlayerData.items) do
+        if v.type == 'weapon' then
+            if v.info.serie == serie then
+                svslot = v.slot
 
                 -- weapon quality update
                 local newquality = (Player.PlayerData.items[svslot].info.quality - Config.DegradeRate)
@@ -91,48 +78,23 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
 end)
 
 ------------------------------------------
--- components loader
+-- use weapon repair kit
 ------------------------------------------
-RegisterNetEvent('rsg-weapons:server:LoadComponents', function(serial, hash)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    local citizenid = Player.PlayerData.citizenid
-    local ownerName = Player.PlayerData.charinfo.firstname..' '..Player.PlayerData.charinfo.lastname
-
-    if Config.Debug then
-        print("Weapon Serial    : "..tostring(serial))
-        print("Weapon Owner     : "..tostring('('..citizenid..')'..ownerName))
-    end
-
-    local result = MySQL.Sync.fetchAll('SELECT * FROM player_weapons WHERE serial = @serial and citizenid = @citizenid',
-    {
-        serial = serial,
-        citizenid = citizenid
-    })
-
-    if result[1] == nil or result[1] == 0 then return end
-
-    local components = json.decode(result[1].components)
-
-    if Config.Debug then
-        print('Components       : "'..tostring(components))
-    end
-
-    TriggerClientEvent('rsg-weapon:client:LoadComponents', src, components, hash)
+RSGCore.Functions.CreateUseableItem('weapon_repair_kit', function(source, item)
+    TriggerClientEvent('rsg-weapons:client:repairweapon', source)
 end)
 
-------------------------------------------
+-----------------------------------
 -- repair weapon
-------------------------------------------
+-----------------------------------
 RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     local svslot = nil
-    local itemData
-    for v,k in pairs(Player.PlayerData.items) do
-        if k.type == 'weapon' then
-            if k.info.serie == serie then
-                svslot = k.slot
+    for _, v in pairs(Player.PlayerData.items) do
+        if v.type == 'weapon' then
+            if v.info.serie == serie then
+                svslot = v.slot
                 Player.PlayerData.items[svslot].info.quality = 100
             end
         end

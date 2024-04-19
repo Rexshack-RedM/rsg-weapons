@@ -14,13 +14,17 @@ shared_scripts {
 }
 
 client_scripts {
-    'client/dataview.lua',
-    'client/client.lua'
+    'client/*.lua',
 }
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
     'server/server.lua',
+}
+
+dependencies {
+    'rsg-core',
+    'ox_lib',
 }
 
 lua54 'yes'

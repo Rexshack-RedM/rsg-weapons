@@ -1,8 +1,10 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
+
 local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
 local weaponInHands = {}
+local currentWeaponSerial = nil
 
 ------------------------------------------
 -- equiped weapons export
@@ -11,6 +13,31 @@ exports('EquippedWeapons', function()
     if EquippedWeapons ~= nil then
         return EquippedWeapons
     end
+end)
+
+------------------------------------------
+-- Check Weapon Serial export
+------------------------------------------
+exports('CheckWeaponSerial', function()
+    local serial = nil
+    local hash = nil
+    local _, wepHash = GetCurrentPedWeapon(cache.ped, true, 0, true)
+
+    if currentWeaponSerial then
+        for k, v in pairs(weaponInHands) do
+            if tonumber(wepHash) == tonumber(k) then
+                hash = k
+                serial = v
+
+                break
+            end
+        end
+    end
+
+    print('^5Weapon Serial^7   : ^2'..tostring(serial)..'^7')
+    print('^5Weapon Hash^7     : ^2'..tostring(hash)..'^7')
+
+    return serial, hash
 end)
 
 ------------------------------------------
@@ -46,8 +73,7 @@ local getGuidFromItemId = function(inventoryId, itemData, category, slotId)
         itemData = 0
     end
 
-    local success = InventoryGetGuidFromItemid(inventoryId, itemData, category, slotId, outItem:Buffer())
-
+   local success = InventoryGetGuidFromItemid(inventoryId, itemData, category, slotId, outItem:Buffer())
     if success then
         return outItem:Buffer()
     end
@@ -84,21 +110,15 @@ local addWardrobeInventoryItem = function(itemName, slotHash)
         return false
     end
 
-    local equipped = InventoryEquipItemWithGuid(inventoryId, itemData:Buffer(), true)
+    local equipped = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), true)
 
     return equipped
-end
-
-local GiveWeaponComponentToEntity = function(entity, componentHash, weaponHash, p3)
-    return GiveWeaponComponentToEntity(entity, componentHash, weaponHash, p3)
 end
 
 ------------------------------------------
 -- auto dual-wield
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:AutoDualWield', function()
-    
-
     addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
     addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
 
@@ -115,9 +135,8 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
     local hash = joaat(weaponData.name)
     local wepSerial = tostring(weaponData.info.serie)
     local wepQuality = weaponData.info.quality
-    
-    RSGCore.Functions.TriggerCallback('rsg-weapons:server:getweaponinfo', function(results)
 
+    RSGCore.Functions.TriggerCallback('rsg-weapons:server:getweaponinfo', function(results)
         local ammo = results[1].ammo
         local ammo_high_velocity = results[1].ammo_high_velocity
         local ammo_split_point = results[1].ammo_split_point
@@ -132,7 +151,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
         local ammo_dynamite = results[1].ammo_dynamite
 
         if wepQuality > 1 then
-            
+
             for i = 1, #EquippedWeapons do
                 local usedHash = EquippedWeapons[i]
 
@@ -163,6 +182,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
+                            -- lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW`, ammo, 0xCA3454E6)
@@ -175,6 +195,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
+                            -- lib.notify({ title = 'No Fire Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_FIRE`, ammo_fire, 0xCA3454E6)
@@ -187,6 +208,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
+                            -- lib.notify({ title = 'No Poison Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_POISON`, ammo_poison, 0xCA3454E6)
@@ -199,6 +221,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
+                            -- lib.notify({ title = 'No Dynamite Arrows', type = 'error', duration = 5000 })
                         end
                     else
                         SetPedAmmoByType(cache.ped, `AMMO_ARROW_DYNAMITE`, ammo_dynamite, 0xCA3454E6)
@@ -207,17 +230,18 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     GiveWeaponToPed(cache.ped, hash, 0, false, true)
 
                     if ammo == 0 and ammo_fire == 0 and ammo_poison == 0 and ammo_dynamite == 0 then
-                        lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
+                        -- lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
                     end
-
                 --check throwables weapons
                 elseif string.find(weaponName, 'thrown') then
-                    GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
+                    GiveWeaponToPed(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
+                    -- GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
                 else
                      if ammo == nil then
                         ammo = 0
-                    end 
+                    end
+                    --local _currentAmmo = loadedAmmo[wepSerial]
                     GiveWeaponToPed(cache.ped, hash, 0, false, true)
                 end
                 if  string.find(weaponName, 'thrown') then
@@ -228,7 +252,6 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                         ammo = 0
                     end
                 end
-
                 SetAmmoInClip(cache.ped, hash, 0)
 
                 if string.find(weaponName, 'revolver') then
@@ -270,21 +293,24 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 end
                 if weaponName == 'weapon_rifle_varmint' then
                     SetPedAmmoByType(cache.ped, `AMMO_22`, ammo, 0xCA3454E6)
-                    SetPedAmmoByType(cache.ped, `AMMO_22_TRANQUILIZER`, ammo, 0xCA3454E6)
+                    SetPedAmmoByType(cache.ped, `AMMO_22_TRANQUILIZER`, ammo_tranquilizer, 0xCA3454E6)
                 end
 
                 if Config.Debug then
-                    print("Weapon Serial : "..wepSerial)
-                    print("Weapon Hash   : "..hash)
+                    print("Weapon Serial: "..wepSerial)
+                    print("Weapon Hash: "..hash)
                 end
 
                 weaponInHands[hash] = wepSerial
-                TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash)
+
+                if Config.WeaponComponents then
+                    TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+                end
                 SetCurrentPedWeapon(cache.ped,hash,true)
 
             else
                 print('removing weapon ')
-                RemoveWeaponFromPed(cache.ped,hash)
+                RemoveWeaponFromPed(cache.ped, hash)
                 UsedWeapons[tonumber(hash)] = nil
 
                 for i = 1, #EquippedWeapons do
@@ -310,7 +336,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             weaponInHands[hash] = wepSerial
 
         else
-            RemoveWeaponFromPed(cache.ped,hash)
+            RemoveWeaponFromPed(cache.ped, hash)
             UsedWeapons[tonumber(hash)] = nil
 
             for i = 1, #EquippedWeapons do
@@ -323,30 +349,16 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             end
 
             TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
+
+            if Config.WeaponComponents then
+                TriggerServerEvent("rsg-weaponcomp:server:removeComponents", {}, weaponName, wepSerial) -- update SQL
+                TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+            end
+
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
 
         end
     end, wepSerial)
-end)
-
-------------------------------------------
--- weapon components loader
-------------------------------------------
-RegisterNetEvent("rsg-weapon:client:LoadComponents")
-AddEventHandler("rsg-weapon:client:LoadComponents", function(components, hash)
-    Wait(500)
-
-    for i = 1, #components do
-        if components[i].model ~= 0 then
-            LoadModel(components[i].model)
-        end
-
-        GiveWeaponComponentToEntity(cache.ped, components[i].name, hash, true)
-
-        if components[i].model ~= 0 then
-            SetModelAsNoLongerNeeded(components[i].model)
-        end
-    end
 end)
 
 ------------------------------------------
@@ -355,8 +367,10 @@ end)
 CreateThread(function()
     while true do
         Wait(1)
+
         if IsPedShooting(cache.ped) then
             local heldWeapon = GetPedCurrentHeldWeapon(cache.ped)
+
             local currentSerial = weaponInHands[heldWeapon]
 
             if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
@@ -372,9 +386,9 @@ end)
 CreateThread(function()
     while true do
         Wait(1)
-        SetPlayerWeaponDamageModifier(PlayerId(),Config.WeaponDmg)
-        SetPlayerMeleeWeaponDamageModifier(PlayerId(),Config.MeleeDmg)
-        if IsPlayerFreeAiming(PlayerId()) then
+        SetPlayerWeaponDamageModifier(cache.ped, Config.WeaponDmg)
+        SetPlayerMeleeWeaponDamageModifier(cache.ped, Config.MeleeDmg)
+        if IsPlayerFreeAiming(cache.ped) then
             DisableControlAction(0, 0x8FFC75D6, true)
         end
     end
@@ -384,7 +398,6 @@ end)
 -- repair weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairweapon', function()
-
     local heldWeapon = GetPedCurrentHeldWeapon(cache.ped)
     local currentSerial = weaponInHands[heldWeapon]
     if currentSerial ~= nil and heldWeapon ~= -1569615261 then
@@ -393,22 +406,19 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
             position = 'bottom',
             useWhileDead = false,
             canCancel = false,
-            disableControl = true,
+            disable = {
+                move = true,
+                car = true,
+                combat= true,
+                mouse= false,
+                sprint = true,
+            },
             label = Lang:t('progressbar.repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
     else
-        lib.notify(
-            { 
-                title = Lang:t('error.no_weapon_found'),
-                description = Lang:t('error.no_weapon_found_desc'),
-                type = 'inform',
-                icon = 'fa-solid fa-gun',
-                iconAnimation = 'shake',
-                duration = 7000
-            }
-        )
+        lib.notify({ title = Lang:t('error.no_weapon_found'), description = Lang:t('error.no_weapon_found_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 })
     end
 end)
 
@@ -417,19 +427,17 @@ end)
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:brokenweapon', function(serial)
     local input = lib.inputDialog('Repair Weapon', {
-        { 
+        {
             type = 'select',
-            label = 'Repair Weapon',
-            options = { 
-                { value = 'yes', text = 'Yes' }, 
-                { value = 'no', text = 'No' }  
+            label = Lang:t('success.weapon_repair'),
+            options = {
+                { value = 'yes', text = Lang:t('success.reapir_yes') },
+                { value = 'no', text = 'No' }
             },
             required = true
         },
     })
-
     if not input then return end
-
     if input[1] == 'yes' then
         TriggerEvent('rsg-weapons:client:repairbrokenweapon', serial)
     end
@@ -439,6 +447,7 @@ end)
 -- repair broken weapon
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
+
     local hasItem = RSGCore.Functions.HasItem('weapon_repair_kit', 1)
     if hasItem and serial ~= nil then
         lib.progressBar({
@@ -446,21 +455,18 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
             position = 'bottom',
             useWhileDead = false,
             canCancel = false,
-            disableControl = true,
+            disable = {
+                move = true,
+                car = true,
+                combat= true,
+                mouse= false,
+                sprint = true,
+            },
             label = Lang:t('progressbar.repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
     else
-        lib.notify(
-            { 
-                title = 'Item Needed',
-                description = 'weapon repair kit needed!',
-                type = 'inform',
-                icon = 'fa-solid fa-gun',
-                iconAnimation = 'shake',
-                duration = 7000
-            }
-        )
+        lib.notify({ title = Lang:t('success.item_need'), description = Lang:t('success.item_need_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 } )
     end
 end)

@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS `player_weapons` (
     `serial` varchar(16) NOT NULL,
     `citizenid` varchar(9) NOT NULL,
     `components` varchar(4096) NOT NULL DEFAULT '{}',
+    `components_before` varchar(4096) NOT NULL DEFAULT '{}',
     `ammo` int(3) NOT NULL DEFAULT 0,
     `ammo_express` int(3) NOT NULL DEFAULT 0,
     `ammo_express_explosive` int(3) NOT NULL DEFAULT 0,
@@ -19,5 +20,5 @@ CREATE TABLE IF NOT EXISTS `player_weapons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Sample Data
-INSERT INTO `player_weapons` (`id`, `serial`, `citizenid`, `components`) VALUES
-(1, 'BM123456', '666', '[{\"label\":\"Medium Scope\",\"comp\":\"comp\",\"name\":-1844750633,\"type\":\"scope\",\"model\":2044211697},{\"label\":\"Improved Rifling\",\"comp\":\"comp\",\"name\":488786388,\"type\":\"rifling\",\"model\":0},{\"label\":\"Wrap\",\"comp\":\"comp\",\"name\":1419411400,\"type\":\"wrap\",\"model\":890000845},{\"label\":\"Gold\",\"model\":0,\"name\":681399557,\"comp\":\"barrel\"},{\"label\":\"Gold\",\"model\":0,\"name\":-1217972306,\"comp\":\"trigger\"},{\"label\":\"Gold\",\"model\":0,\"name\":-1217972306,\"comp\":\"trigger\"},{\"label\":\"Gold\",\"model\":0,\"name\":1906948138,\"comp\":\"frame\"},{\"label\":\"Gold\",\"model\":0,\"name\":-897983242,\"comp\":\"cylinder\"},{\"label\":\"Gold\",\"model\":0,\"name\":-897983242,\"comp\":\"cylinder\"},{\"label\":\"Bounty Hunter Grain\",\"model\":680020185,\"name\":1043980328,\"comp\":\"gripbody\"},{\"label\":\"Flying Eagle\",\"model\":0,\"name\":2110982730,\"comp\":\"grip\"},{\"label\":\"Art Nouveau\",\"comp\":\"decal\",\"name\":1338763465,\"type\":\"frame\",\"model\":0},{\"label\":\"Art Nouveau\",\"comp\":\"decal\",\"name\":-1719565838,\"type\":\"barrel\",\"model\":0},{\"label\":\"Blued Steel\",\"comp\":\"decalcolor\",\"name\":-1822969329,\"type\":\"frame\",\"model\":0},{\"label\":\"Blued Steel\",\"comp\":\"decalcolor\",\"name\":1585980544,\"type\":\"barrel\",\"model\":0},{\"label\":\"Gold\",\"model\":0,\"name\":-1021999895,\"comp\":\"scope\"},{\"label\":\"White\",\"model\":0,\"name\":1170373926,\"comp\":\"wrapcolor\"}]');
+INSERT INTO `player_weapons` (`id`, `serial`, `components`) VALUES
+(1, 'BM123456','[{"GRIP":"COMPONENT_PISTOL_MAUSER_GRIP_BURLED","SIGHT":"COMPONENT_PISTOL_MAUSER_SIGHT_WIDE"}]')

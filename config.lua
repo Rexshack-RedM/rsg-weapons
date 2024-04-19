@@ -1,6 +1,7 @@
 Config = {}
 
 Config.Debug = false
+Config.WeaponComponents = true -- true or false with script custom weapon (note with false can use /loadweapon for equiped) 
 
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
@@ -44,4 +45,3 @@ Config.AmmoTypes = {
     ['weapon_thrown_molotov'] = `AMMO_MOLOTOV`,
     ['weapon_thrown_poisonbottle'] = `AMMO_POISONBOTTLE`
 }
-
