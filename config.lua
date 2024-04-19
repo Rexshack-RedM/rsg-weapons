@@ -1,6 +1,7 @@
 Config = {}
 
 Config.Debug = false
+Config.WeaponComponents = true -- true or false with script custom weapon
 
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
