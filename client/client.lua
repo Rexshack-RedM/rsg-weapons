@@ -304,7 +304,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 weaponInHands[hash] = wepSerial
 
                 if Config.WeaponComponents then
-                    TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+                    TriggerServerEvent('rsg-weaponcomp:server:check_comps')
                 end
                 SetCurrentPedWeapon(cache.ped,hash,true)
 
@@ -352,7 +352,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
             if Config.WeaponComponents then
                 TriggerServerEvent("rsg-weaponcomp:server:removeComponents", {}, weaponName, wepSerial) -- update SQL
-                TriggerServerEvent('rsg-weaponcomp:server:LoadSkinWeapon', wepSerial)
+                TriggerServerEvent('rsg-weaponcomp:server:check_comps')
             end
 
             lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
