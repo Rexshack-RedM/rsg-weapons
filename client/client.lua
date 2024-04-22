@@ -110,7 +110,7 @@ local addWardrobeInventoryItem = function(itemName, slotHash)
         return false
     end
 
-    local equipped = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), true)
+    local equipped = InventoryEquipItemWithGuid(inventoryId, itemData:Buffer(), true)
 
     return equipped
 end
