@@ -356,7 +356,8 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
 
             if Config.WeaponComponents then -- false need /loadweapon load
-                TriggerServerEvent("rsg-weaponcomp:server:removeComponents", {}, weaponName, wepSerial) -- update SQL
+                TriggerServerEvent("rsg-weaponcomp:server:removeComponents", "DEFUALT", weaponName, wepSerial)
+                Wait(0)
                 TriggerServerEvent('rsg-weaponcomp:server:check_comps')
             end
 
