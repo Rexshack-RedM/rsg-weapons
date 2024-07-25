@@ -43,8 +43,10 @@ exports('CheckWeaponSerial', function()
         end
     end
 
+    if Config.Debug then
     print('^5Weapon Serial^7   : ^2'..tostring(serial)..'^7')
     print('^5Weapon Hash^7     : ^2'..tostring(hash)..'^7')
+    end
 
     return serial, hash
 end)
@@ -310,8 +312,9 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 SetCurrentPedWeapon(cache.ped,hash,true)
 
             else
-
+                if Config.Debug then
                 print('removing weapon ')
+                end
 
                 RemoveWeaponFromPed(cache.ped, hash)
                 UsedWeapons[tonumber(hash)] = nil
@@ -371,7 +374,6 @@ end)
 -- On Player Loaded
 ------------------------------------------
 RegisterNetEvent('RSGCore:client:OnPlayerLoaded', function()
-    print('Player loaded!')
     Wait(5000)
     if Config.WeaponComponents then
         TriggerServerEvent('rsg-weaponcomp:server:check_comps')
