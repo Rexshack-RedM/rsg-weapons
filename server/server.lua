@@ -41,7 +41,7 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
                 svslot = v.slot
 
                 -- weapon quality update
-                local newquality = (Player.PlayerData.items[svslot].info.quality - Config.DegradeRate)
+                local newquality = math.floor((Player.PlayerData.items[svslot].info.quality - Config.DegradeRate) * 10) / 10
                 Player.PlayerData.items[svslot].info.quality = newquality
 
                 if Player.PlayerData.items[svslot].info.quality <= 0 then
