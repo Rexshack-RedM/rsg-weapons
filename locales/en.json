@@ -1,0 +1,24 @@
+{
+    
+    "cl_text_01": "Test",
+    "sv_text_01": "Test",
+
+    "cl_no_arrow": "No Arrows",
+    "cl_no_arrow_fire": "No Arrows Fire",
+    "cl_no_arrow_poison": "No Arrows Poison",
+    "cl_no_arrow_explosive": "No Dynamite Explosive",
+    "cl_no_arrows_your_inventory_load": "no arrows in your inventory to load",
+    "cl_weapon_degraded": "weapon is degraded!",
+    "cl_repairing_weapon": "Repairing Weapon",
+    "cl_no_weapon_found": "No Weapon Found",
+    "cl_no_weapon_found_desc": "you must be holding the weapon",
+    "cl_weapon_repair": "Repair Weapon",
+    "cl_weapon_repair_p": "Repair Weapon",
+    "cl_reapir_yes": "Yes",
+    "cl_reapir_no": "No",
+    "cl_item_need": "Item Needed",
+    "cl_item_need_desc": "weapon repair kit needed!",
+
+    "sv_weapon_repair": "Repair Weapon",
+    "sv_weapon_reloaded": "Weapon Reloaded"
+}

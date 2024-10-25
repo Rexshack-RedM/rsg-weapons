@@ -1,5 +1,5 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
-
+lib.locale()
 local alreadyUsed = false
 local UsedWeapons = {}
 local EquippedWeapons = {}
@@ -44,8 +44,8 @@ exports('CheckWeaponSerial', function()
     end
 
     if Config.Debug then
-    print('^5Weapon Serial^7   : ^2'..tostring(serial)..'^7')
-    print('^5Weapon Hash^7     : ^2'..tostring(hash)..'^7')
+        print('^5Weapon Serial^7   : ^2'..tostring(serial)..'^7')
+        print('^5Weapon Hash^7     : ^2'..tostring(hash)..'^7')
     end
 
     return serial, hash
@@ -184,7 +184,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow')
                         else
                             ammo = 0
-                            lib.notify({ title = 'No Arrows', type = 'error', duration = 5000 })
+                            lib.notify({ title = locale('cl_no_arrow'), type = 'error', duration = 5000 })
                         end
                     else
                         Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, joaat('AMMO_ARROW'), ammo) -- , 0xCA3454E6
@@ -197,7 +197,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_fire')
                         else
                             ammo_fire = 0
-                            lib.notify({ title = 'No Arrows Fire', type = 'error', duration = 5000 })
+                            lib.notify({ title = locale('cl_no_arrow_fire'), type = 'error', duration = 5000 })
                         end
                     else
                         Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, joaat('AMMO_ARROW_FIRE'), ammo_fire) -- , 0xCA3454E6
@@ -210,7 +210,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_poison')
                         else
                             ammo_poison = 0
-                            lib.notify({ title = 'No Arrows Poison', type = 'error', duration = 5000 })
+                            lib.notify({ title = locale('cl_no_arrow_poison'), type = 'error', duration = 5000 })
                         end
                     else
                         Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, joaat('AMMO_ARROW_POISON'), ammo_poison) -- , 0xCA3454E6
@@ -223,7 +223,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                             TriggerServerEvent('rsg-weapons:server:removeWeaponAmmoItem', 'ammo_arrow_dynamite')
                         else
                             ammo_dynamite = 0
-                            lib.notify({ title = 'No Dynamite Explosive', type = 'error', duration = 5000 })
+                            lib.notify({ title = locale('cl_no_arrow_explosive'), type = 'error', duration = 5000 })
                         end
                     else
                         Citizen.InvokeNative(0x5FD1E1F011E76D7E, cache.ped, joaat('AMMO_ARROW_DYNAMITE'), ammo_dynamite) -- , 0xCA3454E6
@@ -236,7 +236,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                     -- GiveWeaponToPed(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
 
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
+                    TriggerServerEvent('rsg-weapons:server:removeitem', weaponName, 1)
                 else
                      if ammo == nil then
                         ammo = 0
@@ -306,14 +306,13 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
 
                 if Config.WeaponComponents then
                     TriggerServerEvent('rsg-weaponcomp:server:check_comps')
-                    -- TriggerServerEvent('rsg-weapons:server:LoadComponents', wepSerial, hash) -- load object
                 end
 
                 SetCurrentPedWeapon(cache.ped,hash,true)
 
             else
                 if Config.Debug then
-                print('removing weapon ')
+                    print('removing weapon ')
                 end
 
                 RemoveWeaponFromPed(cache.ped, hash)
@@ -364,7 +363,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 TriggerServerEvent('rsg-weaponcomp:server:check_comps')
             end
 
-            lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
+            lib.notify({ title = locale('cl_weapon_degraded'), type = 'error', duration = 5000 })
 
         end
     end, wepSerial)
@@ -380,8 +379,9 @@ RegisterNetEvent('RSGCore:client:OnPlayerLoaded', function()
     end
 end)
 
+local resource = GetCurrentResourceName()
 AddEventHandler('onResourceStart', function(r)
-    if GetCurrentResourceName() ~= r then return end
+    if resource ~= r then return end
     TriggerEvent('RSGCore:client:OnPlayerLoaded')
 end)
 
@@ -391,12 +391,9 @@ end)
 CreateThread(function()
     while true do
         Wait(1)
-
         if IsPedShooting(cache.ped) then
             local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped) -- GetPedCurrentHeldWeapon(
-
             local serialHeld = weaponInHands[heldWeapon]
-
             if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
                 TriggerServerEvent('rsg-weapons:server:degradeWeapon', serialHeld)
             end
@@ -437,12 +434,12 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
                 mouse= false,
                 sprint = true,
             },
-            label = Lang:t('progressbar.repairing_weapon'),
+            label = locale('cl_repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
     else
-        lib.notify({ title = Lang:t('error.no_weapon_found'), description = Lang:t('error.no_weapon_found_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 })
+        lib.notify({ title = locale('cl_no_weapon_found'), description = locale('cl_no_weapon_found_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 })
     end
 end)
 
@@ -450,13 +447,13 @@ end)
 -- broken repair weapon choice yes/no
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:client:brokenweapon', function(serial)
-    local input = lib.inputDialog('Repair Weapon', {
+    local input = lib.inputDialog(locale('cl_weapon_repair'), {
         {
             type = 'select',
-            label = Lang:t('success.weapon_repair'),
+            label = locale('cl_weapon_repair_p'),
             options = {
-                { value = 'yes', text = Lang:t('success.reapir_yes') },
-                { value = 'no', text = 'No' }
+                { value = 'yes', text = locale('cl_reapir_yes') },
+                { value = 'no', text =  locale('cl_reapir_no') }
             },
             required = true
         },
@@ -486,11 +483,11 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
                 mouse= false,
                 sprint = true,
             },
-            label = Lang:t('progressbar.repairing_weapon'),
+            label = locale('cl_repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
     else
-        lib.notify({ title = Lang:t('success.item_need'), description = Lang:t('success.item_need_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 } )
+        lib.notify({ title = locale('cl_item_need'), description = locale('cl_item_need_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 } )
     end
 end)
