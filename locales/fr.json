@@ -1,0 +1,24 @@
+{
+  
+    "cl_text_01": "Test",
+    "sv_text_01": "Test",
+
+    "cl_no_arrow": "Pas de flèches",
+    "cl_no_arrow_fire": "Pas de flèches enflammées",
+    "cl_no_arrow_poison": "Pas de flèches empoisonnées",
+    "cl_no_arrow_explosive": "Pas de flèches explosives",
+    "cl_no_arrows_your_inventory_load": "vous n'avez pas de flèches dans votre inventaire à charger",
+    "cl_weapon_degraded": "L'arme est dégradée!",
+    "cl_repairing_weapon": "Réparation de l'arme",
+    "cl_no_weapon_found": "Aucune arme trouvée",
+    "cl_no_weapon_found_desc": "vous devez avoir l'arme en main",
+    "cl_weapon_repair": "Réparer l'arme",
+    "cl_weapon_repair_p": "Réparer l'arme",
+    "cl_reapir_yes": "Oui",
+    "cl_reapir_no": "Non",
+    "cl_item_need": "Objet requis",
+    "cl_item_need_desc": "un kit de réparation d'armes est nécessaire!",
+    
+    "sv_weapon_repair": "Réparer l'arme",
+    "sv_weapon_reloaded": "Arme rechargée"
+}
