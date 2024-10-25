@@ -1,5 +1,6 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 
+lib.locale()
 ------------------------------------
 -- callback to get weapon info
 -----------------------------------
@@ -18,14 +19,8 @@ AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     Player.Functions.RemoveItem(ammoitem, 1)
-    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[ammoitem], 'remove')
-    TriggerClientEvent('ox_lib:notify', src, {title = Lang:t('success.weapon_reloaded'), type = 'success', duration = 5000 })
-end)
-
-RegisterNetEvent('rsg-weapons:server:removeWeaponItem', function(weaponName, amount)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    Player.Functions.RemoveItem(weaponName, amount)
+    TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[ammoitem], 'remove')
+    TriggerClientEvent('ox_lib:notify', src, {title = locale('sv_weapon_reloaded'), type = 'success', duration = 5000 })
 end)
 
 -----------------------------------
@@ -46,7 +41,7 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
 
                 if Player.PlayerData.items[svslot].info.quality <= 0 then
                     print(Player.PlayerData.items[svslot])
-                    TriggerClientEvent("rsg-weapons:client:UseWeapon", src, Player.PlayerData.items[svslot])
+                    TriggerClientEvent('rsg-weapons:client:UseWeapon', src, Player.PlayerData.items[svslot])
                 end
             end
         end
@@ -77,7 +72,7 @@ RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
         end
     end
     Player.Functions.SetInventory(Player.PlayerData.items)
-    TriggerClientEvent('ox_lib:notify', src, {title = Lang:t('success.weapon_repaired'), type = 'success', duration = 5000 })
+    TriggerClientEvent('ox_lib:notify', src, {title = locale('sv_weapon_repaired'), type = 'success', duration = 5000 })
 end)
 
 ---------------------------------------------
@@ -88,5 +83,5 @@ AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     Player.Functions.RemoveItem(item, amount)
-    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "remove")
+    TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', amount)
 end)

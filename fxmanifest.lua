@@ -7,9 +7,6 @@ version '1.2.7'
 
 shared_scripts {
     '@ox_lib/init.lua',
-    '@rsg-core/shared/locale.lua',
-    'locales/en.lua',
-    'locales/*.lua',
     'config.lua',
 }
 
@@ -19,13 +16,17 @@ client_scripts {
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua',
-    'server/server.lua',
-    'server/versionchecker.lua'
+    'server/*.lua',
+}
+
+files {
+    'locales/*.json',
 }
 
 dependencies {
     'rsg-core',
     'ox_lib',
+    'oxmysql'
 }
 
 lua54 'yes'
