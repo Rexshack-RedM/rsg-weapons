@@ -310,7 +310,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 TriggerServerEvent('rsg-weaponcomp:server:check_comps')
             end
 
-            lib.notify({ title = Lang:t('error.weapon_degraded'), type = 'error', duration = 5000 })
+            lib.notify({ title = locale('cl_weapon_degraded'), type = 'error', duration = 5000 })
 
         end
     end, wepSerial)
