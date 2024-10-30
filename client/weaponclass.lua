@@ -51,7 +51,7 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
     local move = false
     local playerPedId = PlayerPedId()
 
-    -- Validar o item no banco de dados
+    -- verify valid item 
     local isValid = ItemdatabaseIsKeyValid(weaponHash, 0)
     if not isValid then
         print("Arma não válida")
@@ -70,7 +70,7 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
 		return false
 	end
 
-    -- Ajustar slot e realizar movimento se necessário
+    -- move to other slot
     if slot == 1 then
         if #EquippedWeapons > 0 then
             local newGUID = moveInventoryItem(inventoryId, EquippedWeapons[1].guid, weaponItem:Buffer(), 1)
@@ -87,7 +87,7 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
         end
     end
 
-    -- Adicionar a arma ao inventário
+    -- add weapon to inventory
     local itemData = DataView.ArrayBuffer(8 * 13)
     local isAdded = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), weaponItem:Buffer(), weaponHash, slotHash, 1, addReason)
     if not isAdded then
@@ -95,21 +95,21 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
         return false
     end
 
-    -- Equipar o item no jogador
+    -- equip weapon to player
     local equipped = InventoryEquipItemWithGuid(inventoryId, itemData:Buffer(), true)
     if not equipped then
         print("Não é capaz de equipar")
         return false
     end
 
-    -- Aplicar a arma ao jogador
+    -- equip weapon to inventory
     WeaponAPI.used = true
     Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, itemData:Buffer(), true, slot, false, false)
     if move then
         Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, EquippedWeapons[1].guid, true, 1, false, false)
     end
 
-    -- Adicionar a arma à lista de armas equipadas
+    -- add weapon to list equippedweapons
     if id then
         local nWeapon = {
             id = id,
@@ -127,7 +127,7 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
     local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, joaat(weaponName))
     local playerPedId = PlayerPedId()
     local inventoryId = 1
-    -- Variável para verificar se a arma foi removida com sucesso
+    -- Variable to check if the weapon was removed successfully
     local weaponRemoved = false
     if isWeaponAGun and isWeaponOneHanded then
         for k, v in pairs(EquippedWeapons) do
@@ -140,7 +140,7 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
         end
     end
 
-    -- Se houve uma remoção e ainda restar uma arma na tabela, reposicioná-la
+    -- If there was a removal and still reset a weapon on the table, reposition it
     if weaponRemoved and #EquippedWeapons > 0 then
         exports['rsg-weapons']:UsedWeapons(serial)
         WeaponAPI.used2 = false
@@ -156,7 +156,7 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
             return false
         end
 
-        -- Mover a arma restante para o slot correto
+        -- Move the remaining weapon to the correct slot
         local moveSuccess = moveInventoryItem(inventoryId, EquippedWeapons[1].guid, weaponItem:Buffer(), 0)
         if moveSuccess then
             Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, EquippedWeapons[1].guid, true, 0, false, false)
