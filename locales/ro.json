@@ -1,0 +1,23 @@
+{
+    "cl_text_01": "Test",
+    "sv_text_01": "Test",
+
+    "cl_no_arrow": "Fara Sageti",
+    "cl_no_arrow_fire": "Fara Sageti de Foc",
+    "cl_no_arrow_poison": "Fara Sageti Murdare",
+    "cl_no_arrow_explosive": "Fara Explozibile Dynamite",
+    "cl_no_arrows_your_inventory_load": "nu ai sageti in inventar pentru a incarca",
+    "cl_weapon_degraded": "arma este degradanta!",
+    "cl_repairing_weapon": "Reparare Arma",
+    "cl_no_weapon_found": "Nicio Arma Gasesc",
+    "cl_no_weapon_found_desc": "trebuie sa tii arma in mana",
+    "cl_weapon_repair": "Reparare Arma",
+    "cl_weapon_repair_p": "Reparare Arma",
+    "cl_reapir_yes": "Da",
+    "cl_reapir_no": "Nu",
+    "cl_item_need": "Element Necesare",
+    "cl_item_need_desc": "kit de reparare arma necesar!",
+
+    "sv_weapon_repair": "Reparare Arma",
+    "sv_weapon_reloaded": "Arma Reincarcata"
+}
