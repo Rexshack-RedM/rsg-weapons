@@ -194,7 +194,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
                 elseif string.find(weaponName, 'thrown') then
                     -- GiveWeaponToPed(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
                     GiveWeaponToPed_2(cache.ped, hash, 0, false, true, 0, false, 0.5, 1.0, 752097756, false, 0.0, false)
-                    TriggerServerEvent('rsg-weapons:server:removeWeaponItem', weaponName, 1)
+                    TriggerServerEvent('rsg-weapons:server:removeitem', weaponName, 1)
                     SetCurrentPedWeapon(cache.ped,hash,true)
                 else
                     if ammo == nil then
