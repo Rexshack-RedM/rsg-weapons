@@ -51,16 +51,15 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
     local move = false
     local playerPedId = PlayerPedId()
 
-    -- Validar o item no banco de dados
     local isValid = ItemdatabaseIsKeyValid(weaponHash, 0)
     if not isValid then
-        print("Arma não válida")
+        print("Weapon not valid")
         return false
     end
 
     local characterItem = getGuidFromItemId(inventoryId, nil, joaat("CHARACTER"), 0xA1212100) --return func_1367(joaat("CHARACTER"), func_2485(), -1591664384, bParam0);
 	if not characterItem then
-		print("sem características")
+		print("featureless")
 		return false
 	end
 
@@ -70,12 +69,11 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
 		return false
 	end
 
-    -- Ajustar slot e realizar movimento se necessário
     if slot == 1 then
         if #EquippedWeapons > 0 then
             local newGUID = moveInventoryItem(inventoryId, EquippedWeapons[1].guid, weaponItem:Buffer(), 1)
             if not newGUID then
-                print("Não é possível mover o item")
+                print("Cannot move item")
                 return false
             end
             slotHash = joaat('SLOTID_WEAPON_0')
@@ -87,29 +85,25 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
         end
     end
 
-    -- Adicionar a arma ao inventário
     local itemData = DataView.ArrayBuffer(8 * 13)
     local isAdded = InventoryAddItemWithGuid(inventoryId, itemData:Buffer(), weaponItem:Buffer(), weaponHash, slotHash, 1, addReason)
     if not isAdded then
-        print("Não adicionado")
+        print("Not added")
         return false
     end
 
-    -- Equipar o item no jogador
     local equipped = InventoryEquipItemWithGuid(inventoryId, itemData:Buffer(), true)
     if not equipped then
-        print("Não é capaz de equipar")
+        print("Unable to equip")
         return false
     end
 
-    -- Aplicar a arma ao jogador
     WeaponAPI.used = true
     Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, itemData:Buffer(), true, slot, false, false)
     if move then
         Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, EquippedWeapons[1].guid, true, 1, false, false)
     end
 
-    -- Adicionar a arma à lista de armas equipadas
     if id then
         local nWeapon = {
             id = id,
@@ -127,7 +121,7 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
     local isWeaponOneHanded = Citizen.InvokeNative(0xD955FEE4B87AFA07, joaat(weaponName))
     local playerPedId = PlayerPedId()
     local inventoryId = 1
-    -- Variável para verificar se a arma foi removida com sucesso
+
     local weaponRemoved = false
     if isWeaponAGun and isWeaponOneHanded then
         for k, v in pairs(EquippedWeapons) do
@@ -140,28 +134,26 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
         end
     end
 
-    -- Se houve uma remoção e ainda restar uma arma na tabela, reposicioná-la
     if weaponRemoved and #EquippedWeapons > 0 then
         exports['rsg-weapons']:UsedWeapons(serial)
         WeaponAPI.used2 = false
         local characterItem = getGuidFromItemId(1, nil, joaat("CHARACTER"), 0xA1212100)
         if not characterItem then
-            print("Erro ao obter item de personagem")
+            print("Error obtaining character item")
             return false
         end
 
         local weaponItem = getGuidFromItemId(1, characterItem:Buffer(), 923904168, -740156546)
         if not weaponItem then
-            print("Erro ao obter item de arma")
+            print("Error obtaining weapon item")
             return false
         end
 
-        -- Mover a arma restante para o slot correto
         local moveSuccess = moveInventoryItem(inventoryId, EquippedWeapons[1].guid, weaponItem:Buffer(), 0)
         if moveSuccess then
             Citizen.InvokeNative(0x12FB95FE3D579238, playerPedId, EquippedWeapons[1].guid, true, 0, false, false)
         else
-            print("Erro ao mover a arma restante")
+            print("Error moving remaining weapon")
         end
     else
         RemoveWeaponFromPed(playerPedId, joaat(weaponName), true, 0)
