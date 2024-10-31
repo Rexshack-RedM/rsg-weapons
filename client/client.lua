@@ -13,6 +13,10 @@ exports('weaponInHands', function()
     end
 end)
 
+exports('UsedWeapons', function(serial)
+    UsedWeapons[serial] = nil
+end)
+
 ------------------------------------------
 -- Check Weapon Serial export
 ------------------------------------------
