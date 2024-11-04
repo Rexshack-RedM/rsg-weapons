@@ -1,0 +1,24 @@
+{
+    
+    "cl_text_01": "Test",
+    "sv_text_01": "Test",
+
+    "cl_no_arrow": "Nessuna freccia",
+    "cl_no_arrow_fire": "Nessuna freccia infuocata",
+    "cl_no_arrow_poison": "Nessuna freccia avvelenata",
+    "cl_no_arrow_explosive": "Nessuna freccia esplosiva",
+    "cl_no_arrows_your_inventory_load": "nessuna freccia nell'inventario da caricare",
+    "cl_weapon_degraded": "l'arma è rovinata!",
+    "cl_repairing_weapon": "Ripara Arma",
+    "cl_no_weapon_found": "Nessuna arma trovata",
+    "cl_no_weapon_found_desc": "è necessario tenere l'arma in mano",
+    "cl_weapon_repair": "Ripara Arma",
+    "cl_weapon_repair_p": "Ripara Arma",
+    "cl_reapir_yes": "Si",
+    "cl_reapir_no": "No",
+    "cl_item_need": "Oggetto Necessario",
+    "cl_item_need_desc": "kit di riparazione necessario!",
+
+    "sv_weapon_repair": "Ripara Arma",
+    "sv_weapon_reloaded": "Arma Ricaricata"
+}
