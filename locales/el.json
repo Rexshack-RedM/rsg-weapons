@@ -1,0 +1,23 @@
+{
+    "cl_text_01": "Δοκιμή",
+    "sv_text_01": "Δοκιμή",
+
+    "cl_no_arrow": "Χωρίς Βέλη",
+    "cl_no_arrow_fire": "Χωρίς Βέλη Φωτιάς",
+    "cl_no_arrow_poison": "Χωρίς Βέλη Δηλητηρίου",
+    "cl_no_arrow_explosive": "Χωρίς Εκρηκτικά Δυναμίτη",
+    "cl_no_arrows_your_inventory_load": "Δεν υπάρχουν βέλη στο απόθεμά σου",
+    "cl_weapon_degraded": "Το όπλο έχει φθαρεί!",
+    "cl_repairing_weapon": "Επισκευή Όπλου",
+    "cl_no_weapon_found": "Δεν βρέθηκε όπλο",
+    "cl_no_weapon_found_desc": "Πρέπει να κρατάς το όπλο",
+    "cl_weapon_repair": "Επισκευή Όπλου",
+    "cl_weapon_repair_p": "Επισκευή Όπλου",
+    "cl_reapir_yes": "Ναι",
+    "cl_reapir_no": "Όχι",
+    "cl_item_need": "Απαιτείται Αντικείμενο",
+    "cl_item_need_desc": "Απαιτείται κιτ επισκευής όπλου!",
+
+    "sv_weapon_repair": "Επισκευή Όπλου",
+    "sv_weapon_reloaded": "Το όπλο γεμίστηκε ξανά"
+}
