@@ -297,7 +297,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData, shootbool)
             if wepQuality == 100 then
                 Citizen.InvokeNative(0xA7A57E89E965D839, object, 0.0)-- SetWeaponDegradation(
             else
-                local currentDeg = wepQuality / 100
+                local currentDeg = (1.0 - (wepQuality / 100))
                 Citizen.InvokeNative(0xA7A57E89E965D839, object, currentDeg) -- SetWeaponDegradation(
             end
 
