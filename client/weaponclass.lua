@@ -161,5 +161,6 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
         WeaponAPI.used = false
     end
 end
+exports('RemoveWeaponFromPeds', WeaponAPI.RemoveWeaponFromPeds)
 
 return WeaponAPI
