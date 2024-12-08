@@ -38,7 +38,7 @@ local moveInventoryItem = function(inventoryId, old, new, slot)
     return success and outGUID or nil
 end
 
-WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash, weaponSerial)
+WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
     if slot == 0 and id then
         if #EquippedWeapons > 0 then
             slot = 1
