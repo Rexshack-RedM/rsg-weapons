@@ -107,6 +107,7 @@ WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
     if id then
         local nWeapon = {
             id = id,
+	    name = weaponName,
             hash = hash,
             guid = itemData:Buffer(),
         }
