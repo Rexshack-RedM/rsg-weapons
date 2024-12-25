@@ -1,0 +1,13 @@
+ALTER TABLE `player_weapons`
+	DROP COLUMN `ammo`,
+	DROP COLUMN `ammo_express`,
+	DROP COLUMN `ammo_express_explosive`,
+	DROP COLUMN `ammo_high_velocity`,
+	DROP COLUMN `ammo_split_point`,
+	DROP COLUMN `ammo_buckshot_incendiary`,
+	DROP COLUMN `ammo_slug`,
+	DROP COLUMN `ammo_slug_explosive`,
+	DROP COLUMN `ammo_tranquilizer`,
+	DROP COLUMN `ammo_fire`,
+	DROP COLUMN `ammo_poison`,
+	DROP COLUMN `ammo_dynamite`;

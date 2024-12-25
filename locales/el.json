@@ -17,6 +17,7 @@
     "cl_reapir_no": "Όχι",
     "cl_item_need": "Απαιτείται Αντικείμενο",
     "cl_item_need_desc": "Απαιτείται κιτ επισκευής όπλου!",
+    "cl_ammo_max": "Max ammo reached!",
 
     "sv_weapon_repair": "Επισκευή Όπλου",
     "sv_weapon_reloaded": "Το όπλο γεμίστηκε ξανά"

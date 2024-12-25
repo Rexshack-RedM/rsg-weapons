@@ -43,5 +43,8 @@ Config.AmmoTypes = {
     ['weapon_thrown_bolas_intertwined']  = `AMMO_BOLAS_INTERTWINED`,
     ['weapon_thrown_dynamite'] = `AMMO_DYNAMITE`,
     ['weapon_thrown_molotov'] = `AMMO_MOLOTOV`,
-    ['weapon_thrown_poisonbottle'] = `AMMO_POISONBOTTLE`
+    ['weapon_thrown_poisonbottle'] = `AMMO_POISONBOTTLE`,
+    ['weapon_melee_hatchet'] = `AMMO_HATCHET`,
+    ['weapon_melee_hatchet_hunter'] = `AMMO_HATCHET_HUNTER`,
+    ['weapon_melee_cleaver'] = `AMMO_HATCHET_CLEAVER`,
 }

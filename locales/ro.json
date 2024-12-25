@@ -17,6 +17,7 @@
     "cl_reapir_no": "Nu",
     "cl_item_need": "Element Necesare",
     "cl_item_need_desc": "kit de reparare arma necesar!",
+    "cl_ammo_max": "Max ammo reached!",
 
     "sv_weapon_repair": "Reparare Arma",
     "sv_weapon_reloaded": "Arma Reincarcata"
