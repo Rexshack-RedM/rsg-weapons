@@ -126,6 +126,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData)
                 data = weaponData,
                 serie = weaponData.info.serie,
             }
+
             if weaponName == 'weapon_bow' or weaponName == 'weapon_bow_improved' then
                 GiveWeaponToPed(cache.ped, hash, 0, false, true)
                 SetCurrentPedWeapon(cache.ped,hash,true)
@@ -197,18 +198,50 @@ end)
 RegisterNetEvent('rsg-weapons:client:UseThrownWeapon', function(weaponData) 
     local weaponName = tostring(weaponData.name)
     local hash = joaat(weaponData.name)
-    local ammoType = Config.AmmoTypes[weaponName]
-
-    local originalAmount = GetPedAmmoByType(cache.ped, ammoType)
-    local amount = originalAmount + Config.AmountThrowablesAmmo
-    if GetMaxAmmo(cache.ped, hash) < amount then
-        lib.notify({ title = locale('cl_ammo_max'), type = 'error', duration = 5000 })
+    local ammoType = Config.ThrowableWeaponAmmoTypes[weaponName]
+    local ammoDefinition = exports['rsg-ammo']:GetAmmoTypes()[ammoType]
+    if not ammoDefinition then 
+        --notify
+        lib.print.info('neni defi', ammoType, weaponName)
         return
     end
 
+    local originalAmount = GetPedAmmoByType(cache.ped, ammoDefinition.hash)
+    local desiredAmount = originalAmount + ammoDefinition.refill
+    if ammoDefinition.maxAmmo < desiredAmount then
+        lib.notify({ title = locale('cl_ammo_max'), type = 'error', duration = 5000 })
+        return
+    end
+    
+    if not HasPedGotWeapon(cache.ped, hash) then
+        GiveWeaponToPed(cache.ped, hash, 0)
+    end
+
+    AddAmmoToPedByType(cache.ped, ammoDefinition.hash, ammoDefinition.refill)
+    SetCurrentPedWeapon(cache.ped, hash, true)
     TriggerServerEvent('rsg-weapons:server:removeitem', weaponName, 1)
-    GiveWeaponToPed(cache.ped, ammoType, amount, false, true )
-    SetPedAmmoByType(cache.ped, ammoType, amount)
+end)
+
+RegisterNetEvent('rsg-weapons:client:UseEquipment', function(weaponData) 
+    local weaponName = tostring(weaponData.name)
+    local hash = joaat(weaponData.name)
+
+    if weaponName == 'weapon_melee_torch' then
+        if not HasPedGotWeapon(cache.ped, hash) then
+            GiveWeaponToPed(cache.ped, hash, 0, false, true)
+            SetCurrentPedWeapon(cache.ped, hash, true)
+            TriggerServerEvent('rsg-weapons:server:removeitem', weaponName, 1)
+        end
+
+        return
+    end
+
+    if not HasPedGotWeapon(cache.ped, hash) then
+        GiveWeaponToPed(cache.ped, hash, 0, false, true)
+        SetCurrentPedWeapon(cache.ped, hash, true)
+    else
+        RemoveWeaponFromPed(cache.ped, hash)
+    end
 end)
 
 ------------------------------------------

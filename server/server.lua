@@ -12,18 +12,6 @@ RSGCore.Functions.CreateCallback('rsg-weapons:server:getweaponinfo', function(so
 end)
 
 -----------------------------------
--- remove ammo from player
------------------------------------
-RegisterServerEvent('rsg-weapons:server:removeWeaponAmmoItem')
-AddEventHandler('rsg-weapons:server:removeWeaponAmmoItem', function(ammoitem)
-    local src = source
-    local Player = RSGCore.Functions.GetPlayer(src)
-    Player.Functions.RemoveItem(ammoitem, 1)
-    TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[ammoitem], 'remove')
-    TriggerClientEvent('ox_lib:notify', src, {title = locale('sv_weapon_reloaded'), type = 'success', duration = 5000 })
-end)
-
------------------------------------
 -- Degrade Weapon
 -----------------------------------
 RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
