@@ -18,6 +18,7 @@
     "cl_reapir_no": "Non",
     "cl_item_need": "Objet requis",
     "cl_item_need_desc": "un kit de réparation d'armes est nécessaire!",
+    "cl_ammo_max": "Max ammo reached!",
     
     "sv_weapon_repair": "Réparer l'arme",
     "sv_weapon_reloaded": "Arme rechargée"
