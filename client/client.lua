@@ -53,49 +53,49 @@ end)
 ------------------------------------------
 
 local function getGuidFromItemId(inventoryId, itemData, category, slotId)
-	local outItem = DataView.ArrayBuffer(8 * 13)
+    local outItem = DataView.ArrayBuffer(8 * 13)
 
-	if not itemData then
-		itemData = 0
-	end
+    if not itemData then
+        itemData = 0
+    end
 
-	local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer())
-	if success then
-		return outItem:Buffer() 
-	else
-		return nil
-	end
+    local success = Citizen.InvokeNative(0x886DFD3E185C8A89, inventoryId, itemData, category, slotId, outItem:Buffer())
+    if success then
+        return outItem:Buffer() 
+    else
+        return nil
+    end
 end
 
 local function addWardrobeInventoryItem(itemName, slotHash)
-	local itemHash = GetHashKey(itemName)
-	local addReason = GetHashKey("ADD_REASON_DEFAULT")
-	local inventoryId = 1
+    local itemHash = GetHashKey(itemName)
+    local addReason = GetHashKey("ADD_REASON_DEFAULT")
+    local inventoryId = 1
 
-	local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, itemHash, 0) 
-	if not isValid then
-		return false
-	end
+    local isValid = Citizen.InvokeNative(0x6D5D51B188333FD1, itemHash, 0) 
+    if not isValid then
+        return false
+    end
 
-	local characterItem = getGuidFromItemId(inventoryId, nil, GetHashKey("CHARACTER"), 0xA1212100)
-	if not characterItem then
-		return false
-	end
+    local characterItem = getGuidFromItemId(inventoryId, nil, GetHashKey("CHARACTER"), 0xA1212100)
+    if not characterItem then
+        return false
+    end
 
-	local wardrobeItem = getGuidFromItemId(inventoryId, characterItem, GetHashKey("WARDROBE"), 0x3DABBFA7)
-	if not wardrobeItem then
-		return false
-	end
+    local wardrobeItem = getGuidFromItemId(inventoryId, characterItem, GetHashKey("WARDROBE"), 0x3DABBFA7)
+    if not wardrobeItem then
+        return false
+    end
 
-	local itemData = DataView.ArrayBuffer(8 * 13)
-	local isAdded = Citizen.InvokeNative(0xCB5D11F9508A928D, inventoryId, itemData:Buffer(), wardrobeItem, itemHash,
-		slotHash, 1, addReason)
-	if not isAdded then
-		return false
-	end
+    local itemData = DataView.ArrayBuffer(8 * 13)
+    local isAdded = Citizen.InvokeNative(0xCB5D11F9508A928D, inventoryId, itemData:Buffer(), wardrobeItem, itemHash,
+        slotHash, 1, addReason)
+    if not isAdded then
+        return false
+    end
 
-	local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
-	return equipped;
+    local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
+    return equipped;
 end
 
 ------------------------------------------
@@ -280,7 +280,9 @@ end)
 RegisterNetEvent('rsg-weapons:client:repairweapon', function()
     local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped) -- GetPedCurrentHeldWeapon(
     local currentSerial = weaponInHands[heldWeapon]
-    if currentSerial ~= nil and heldWeapon ~= -1569615261 then
+    local hasItem = RSGCore.Functions.HasItem('weapon_repair_kit', 1)
+    if hasItem and currentSerial ~= nil and heldWeapon ~= -1569615261 then
+        LocalPlayer.state:set("inv_busy", true, true) -- lock inventory
         lib.progressBar({
             duration = Config.RepairTime,
             position = 'bottom',
@@ -288,15 +290,13 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
             canCancel = false,
             disable = {
                 move = true,
-                car = true,
-                combat= true,
-                mouse= false,
-                sprint = true,
+                mouse = true,
             },
             label = locale('cl_repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
+        LocalPlayer.state:set("inv_busy", false, true) -- unlock inventory
     else
         lib.notify({ title = locale('cl_no_weapon_found'), description = locale('cl_no_weapon_found_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 })
     end
@@ -330,6 +330,7 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
 
     local hasItem = RSGCore.Functions.HasItem('weapon_repair_kit', 1)
     if hasItem and serial ~= nil then
+        LocalPlayer.state:set("inv_busy", true, true) -- lock inventory
         lib.progressBar({
             duration = Config.RepairTime,
             position = 'bottom',
@@ -337,15 +338,13 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
             canCancel = false,
             disable = {
                 move = true,
-                car = true,
-                combat= true,
-                mouse= false,
-                sprint = true,
+                mouse = true,
             },
             label = locale('cl_repairing_weapon'),
         })
         TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
+        LocalPlayer.state:set("inv_busy", false, true) -- unlock inventory
     else
         lib.notify({ title = locale('cl_item_need'), description = locale('cl_item_need_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 } )
     end
