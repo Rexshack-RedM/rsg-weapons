@@ -1,8 +1,4 @@
 {
-  
-    "cl_text_01": "Test",
-    "sv_text_01": "Test",
-
     "cl_no_arrow": "Pas de flèches",
     "cl_no_arrow_fire": "Pas de flèches enflammées",
     "cl_no_arrow_poison": "Pas de flèches empoisonnées",
@@ -19,7 +15,10 @@
     "cl_item_need": "Objet requis",
     "cl_item_need_desc": "un kit de réparation d'armes est nécessaire!",
     "cl_ammo_max": "Max ammo reached!",
-    
+    "cl_lang_1" : "Infinite ammo enabled.",
+    "cl_lang_2" : "Infinite ammo disabled.",
+    "cl_lang_3" : "Infinity Ammo",
+    "cl_lang_4" : "You are not holding a weapon.",
     "sv_weapon_repair": "Réparer l'arme",
     "sv_weapon_reloaded": "Arme rechargée"
 }

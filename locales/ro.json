@@ -1,7 +1,4 @@
 {
-    "cl_text_01": "Test",
-    "sv_text_01": "Test",
-
     "cl_no_arrow": "Fara Sageti",
     "cl_no_arrow_fire": "Fara Sageti de Foc",
     "cl_no_arrow_poison": "Fara Sageti Murdare",
@@ -18,7 +15,10 @@
     "cl_item_need": "Element Necesare",
     "cl_item_need_desc": "kit de reparare arma necesar!",
     "cl_ammo_max": "Max ammo reached!",
-
+    "cl_lang_1" : "Infinite ammo enabled.",
+    "cl_lang_2" : "Infinite ammo disabled.",
+    "cl_lang_3" : "Infinity Ammo",
+    "cl_lang_4" : "You are not holding a weapon.",
     "sv_weapon_repair": "Reparare Arma",
     "sv_weapon_reloaded": "Arma Reincarcata"
 }

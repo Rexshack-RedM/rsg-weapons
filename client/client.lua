@@ -350,9 +350,6 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
     end
 end)
 
-
-
-
 ------------------------------------------
 -- infinityammo for admins
 ------------------------------------------
@@ -371,13 +368,13 @@ RegisterNetEvent('rsg-weapons:toggle', function()
         SetPedInfiniteAmmo(ped, infinityOn, weaponHash)
         lib.notify({
             title = 'Infinity Ammo',
-            description = infinityOn and 'Infinite ammo enabled.' or 'Infinite ammo disabled.',
+            description = infinityOn and locale('cl_lang_1') or locale('cl_lang_1'),
             type = infinityOn and 'success' or 'inform'
         })
     else
         lib.notify({
-            title = 'Infinity Ammo',
-            description = 'You are not holding a weapon.',
+            title = locale('cl_lang_3'),
+            description = locale('cl_lang_4'),
             type = 'error'
         })
     end
