@@ -349,3 +349,36 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
         lib.notify({ title = locale('cl_item_need'), description = locale('cl_item_need_desc'), type = 'inform', icon = 'fa-solid fa-gun', iconAnimation = 'shake', duration = 7000 } )
     end
 end)
+
+
+
+
+------------------------------------------
+-- infinityammo for admins
+------------------------------------------
+local infinityOn = false
+
+RegisterCommand('infinityammo', function()
+    TriggerServerEvent('rsg-weapons:requestToggle')
+end, false)
+
+RegisterNetEvent('rsg-weapons:toggle', function()
+    local ped = PlayerPedId()
+    local hasWeapon, weaponHash = GetCurrentPedWeapon(ped, true)
+    if hasWeapon and weaponHash ~= `WEAPON_UNARMED` then
+        infinityOn = not infinityOn
+        SetPedInfiniteAmmoClip(ped, infinityOn)
+        SetPedInfiniteAmmo(ped, infinityOn, weaponHash)
+        lib.notify({
+            title = 'Infinity Ammo',
+            description = infinityOn and 'Infinite ammo enabled.' or 'Infinite ammo disabled.',
+            type = infinityOn and 'success' or 'inform'
+        })
+    else
+        lib.notify({
+            title = 'Infinity Ammo',
+            description = 'You are not holding a weapon.',
+            type = 'error'
+        })
+    end
+end)

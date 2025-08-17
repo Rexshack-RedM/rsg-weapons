@@ -73,3 +73,19 @@ AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
     Player.Functions.RemoveItem(item, amount)
     TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', amount)
 end)
+
+---------------------------------------------
+-- Infinityammo for admin
+---------------------------------------------
+RegisterNetEvent('rsg-weapons:requestToggle', function()
+    local src = source
+    if RSGCore.Functions.HasPermission(src, 'admin') then
+        TriggerClientEvent('rsg-weapons:toggle', src)
+    else
+        TriggerClientEvent('ox_lib:notify', src, {
+            title = 'Infinity Ammo',
+            description = 'You do not have permission to use this command.',
+            type = 'error'
+        })
+    end
+end)
