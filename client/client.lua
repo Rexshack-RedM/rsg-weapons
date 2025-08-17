@@ -368,7 +368,7 @@ RegisterNetEvent('rsg-weapons:toggle', function()
         SetPedInfiniteAmmo(ped, infinityOn, weaponHash)
         lib.notify({
             title = 'Infinity Ammo',
-            description = infinityOn and locale('cl_lang_1') or locale('cl_lang_1'),
+            description = infinityOn and locale('cl_lang_1') or locale('cl_lang_2'),
             type = infinityOn and 'success' or 'inform'
         })
     else
