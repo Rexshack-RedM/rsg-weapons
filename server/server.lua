@@ -14,29 +14,42 @@ end)
 -----------------------------------
 -- Degrade Weapon
 -----------------------------------
-RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(serie)
+RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(degradationQueue) 
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-    local svslot = nil
-    for _, v in pairs(Player.PlayerData.items) do
-        if v.type == 'weapon' then
-            if v.info.serie == serie then
+    if not Player then 
+        return 
+    end
+    local items = Player.PlayerData.items
+    local hasChanged = false
+    for serial, shotCount in pairs(degradationQueue) do
+        local svslot = nil
+        for _, v in pairs(items) do
+            if v.type == 'weapon' and v.info.serie == serial then
                 svslot = v.slot
-
-                -- weapon quality update
-                local newquality = math.floor((Player.PlayerData.items[svslot].info.quality - Config.DegradeRate) * 10) / 10
-                Player.PlayerData.items[svslot].info.quality = newquality
-
-                if Player.PlayerData.items[svslot].info.quality <= 0 then
-                    print(Player.PlayerData.items[svslot])
-                    TriggerClientEvent('rsg-weapons:client:UseWeapon', src, Player.PlayerData.items[svslot])
-                end
+                break 
             end
         end
-    end
-    Player.Functions.SetInventory(Player.PlayerData.items)
-end)
+        if svslot and items[svslot] then
+            local totalDegradation = (Config.DegradeRate * shotCount)
+            local currentQuality = items[svslot].info.quality
+            local newQuality = math.floor((currentQuality - totalDegradation) * 10) / 10
 
+            if newQuality <= 0 then
+                newQuality = 0
+                items[svslot].info.quality = newQuality
+                TriggerClientEvent('rsg-weapons:client:UseWeapon', src, items[svslot])
+            else
+                items[svslot].info.quality = newQuality
+            end
+            
+            hasChanged = true
+        end
+    end
+    if hasChanged then
+        Player.Functions.SetInventory(items)
+    end
+end)
 ------------------------------------------
 -- use weapon repair kit
 ------------------------------------------

@@ -9,6 +9,7 @@ Config.RepairTime = 30000
 
 -- weapon degradation
 Config.DegradeRate = 0.01
+Config.UpdateDegrade = 5000
 
 --- Damage Weapon
 Config.WeaponDmg = 0.65
