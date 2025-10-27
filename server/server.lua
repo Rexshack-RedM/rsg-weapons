@@ -33,7 +33,7 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(degradationQueue)
         if svslot and items[svslot] then
             local totalDegradation = (Config.DegradeRate * shotCount)
             local currentQuality = items[svslot].info.quality
-            local newQuality = math.floor((currentQuality - totalDegradation) * 10) / 10
+            local newQuality = currentQuality - totalDegradation
 
             if newQuality <= 0 then
                 newQuality = 0
