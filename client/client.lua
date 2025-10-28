@@ -2,6 +2,7 @@ local RSGCore = exports['rsg-core']:GetCoreObject()
 lib.locale()
 local UsedWeapons = {}
 local weaponInHands = {}
+local degradeQueue = {}
 local currentWeaponSerial = nil
 
 ------------------------------------------
@@ -96,6 +97,16 @@ local function addWardrobeInventoryItem(itemName, slotHash)
 
     local equipped = Citizen.InvokeNative(0x734311E2852760D0, inventoryId, itemData:Buffer(), true)
     return equipped;
+end
+
+local function AddToDegradationQueue(serial)
+    if not serial then return end
+    
+    if degradeQueue[serial] then
+        degradeQueue[serial] = degradeQueue[serial] + 1
+    else
+        degradeQueue[serial] = 1
+    end
 end
 
 ------------------------------------------
@@ -254,8 +265,18 @@ CreateThread(function()
             local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped) -- GetPedCurrentHeldWeapon(
             local serialHeld = weaponInHands[heldWeapon]
             if heldWeapon ~= nil and heldWeapon ~= -1569615261 then
-                TriggerServerEvent('rsg-weapons:server:degradeWeapon', serialHeld)
+                AddToDegradationQueue(serialHeld)
             end
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
+        Wait(Config.UpdateDegrade) 
+        if next(degradeQueue) ~= nil then
+            TriggerServerEvent('rsg-weapons:server:degradeWeapon', degradeQueue)
+            degradeQueue = {}
         end
     end
 end)
