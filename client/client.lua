@@ -3,7 +3,16 @@ lib.locale()
 local UsedWeapons = {}
 local weaponInHands = {}
 local degradeQueue = {}
+local weaponDataLookup = {}
 local currentWeaponSerial = nil
+
+for _, v in ipairs(Config.WeaponDamage) do
+    local hash = GetHashKey(v.Name)
+    weaponDataLookup[hash] = {
+        Damage = v.Damage,
+        Name = v.Name
+    }
+end
 
 ------------------------------------------
 -- weapon in hands export
@@ -286,9 +295,30 @@ end)
 ------------------------------------------
 CreateThread(function()
     while true do
+        Wait(250) 
+        local ped = PlayerPedId()
+        local _, wep = GetCurrentPedWeapon(ped)
+        if wep ~= lastWeapon then
+            local weaponData = weaponDataLookup[wep] 
+            local currentModifier = 1.0
+            local weaponLabel = "Unknown Weapon"
+            if weaponData then
+                currentModifier = weaponData.Damage
+                weaponLabel = weaponData.Name
+            end
+            Citizen.InvokeNative(0xD04AD186CE8BB129, PlayerId(), wep, currentModifier) 
+            if Config.Debug and weaponData then
+                local message = string.format("Weapon: %s | Damage Modifier: %.2fx", weaponLabel, currentModifier)
+                print(message)
+            end
+            lastWeapon = wep
+        end
+    end
+end)
+
+CreateThread(function()
+    while true do
         Wait(1)
-        SetPlayerWeaponDamageModifier(PlayerId(), Config.WeaponDmg)
-        SetPlayerMeleeWeaponDamageModifier(PlayerId(), Config.MeleeDmg)
         if IsPlayerFreeAiming(PlayerId()) then
             DisableControlAction(0, 0x8FFC75D6, true)
         end
@@ -398,5 +428,41 @@ RegisterNetEvent('rsg-weapons:toggle', function()
             description = locale('cl_lang_4'),
             type = 'error'
         })
+    end
+end)
+
+------------------------------------------
+-- disable critical hits
+------------------------------------------
+CreateThread(function()
+    while true do
+        Wait(1000) 
+        local pool = GetGamePool('CPed')
+        for _, ped in ipairs(pool) do
+            if DoesEntityExist(ped) then
+                SetPedConfigFlag(ped, 263, Config.DisableCriticalHits) 
+                SetPedConfigFlag(ped, 340, Config.DisableCriticalHits)
+                SetPedConfigFlag(ped, 388, Config.DisableCriticalHits) 
+            end
+        end
+    end
+end)
+
+------------------------------------------
+-- cleanup on resource stop
+------------------------------------------
+AddEventHandler('onResourceStop', function(name)
+    if name ~= GetCurrentResourceName() then 
+        return 
+    end
+    for wepHash in pairs(weaponDataLookup) do
+        Citizen.InvokeNative(0xD04AD186CE8BB129, PlayerId(), wepHash, 1.0)
+    end
+    for _, ped in ipairs(GetGamePool('CPed')) do
+        if DoesEntityExist(ped) then
+            SetPedConfigFlag(ped, 263, false)
+            SetPedConfigFlag(ped, 340, false)
+            SetPedConfigFlag(ped, 388, false)
+        end
     end
 end)
