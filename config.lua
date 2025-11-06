@@ -3,6 +3,8 @@ Config = {}
 Config.Debug = false
 Config.WeaponComponents = true -- true or false with script custom weapon (note with false can use /loadweapon for equiped) 
 
+Config.SaveEquippedWeapons = true
+
 -- settings
 --Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
 Config.RepairTime = 30000
