@@ -87,6 +87,60 @@ AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
     TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', amount)
 end)
 
+RegisterNetEvent('rsg-weapons:server:saveEquippedWeapon', function(weaponData, isEquipped)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local equippedWeapons = Player.PlayerData.metadata.equippedweapons or {}
+    if isEquipped then
+        equippedWeapons[weaponData.info.serie] = {
+            name = weaponData.name,
+            serie = weaponData.info.serie,
+            slot = weaponData.slot
+        }
+    else
+        equippedWeapons[weaponData.info.serie] = nil
+    end
+    Player.Functions.SetMetaData('equippedweapons', equippedWeapons)
+end)
+
+RegisterNetEvent('rsg-weapons:server:saveEquippedKnife', function(knifeName, equipped)
+    local src = source
+    local Player = RSGCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local equippedKnives = Player.PlayerData.metadata.equippedknives or {}
+    if equipped then
+        equippedKnives[knifeName] = true
+    else
+        equippedKnives[knifeName] = nil
+    end
+    Player.Functions.SetMetaData('equippedknives', equippedKnives)
+end)
+
+RSGCore.Functions.CreateCallback('rsg-weapons:server:getEquippedWeapons', function(source, cb)
+    local Player = RSGCore.Functions.GetPlayer(source)
+    if not Player then cb(nil) return end
+    cb(Player.PlayerData.metadata.equippedweapons or {})
+end)
+
+RSGCore.Functions.CreateCallback('rsg-weapons:server:getEquippedKnives', function(source, cb)
+    local Player = RSGCore.Functions.GetPlayer(source)
+    if not Player then cb({}) return end
+    cb(Player.PlayerData.metadata.equippedknives or {})
+end)
+
+RSGCore.Functions.CreateCallback('rsg-weapons:server:getWeaponBySerial', function(source, cb, serial)
+    local Player = RSGCore.Functions.GetPlayer(source)
+    if not Player then cb(nil) return end
+    for _, item in pairs(Player.PlayerData.items) do
+        if item and item.name and item.info and item.info.serie == serial then
+            cb(item)
+            return
+        end
+    end
+    cb(nil)
+end)
+
 ---------------------------------------------
 -- Infinityammo for admin
 ---------------------------------------------
