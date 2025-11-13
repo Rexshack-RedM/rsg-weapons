@@ -13,6 +13,8 @@ Config.RepairTime = 30000
 Config.DegradeRate = 0.01
 Config.UpdateDegrade = 5000
 
+Config.DisableSprintWhileAiming = true
+
 --- Damage Weapon
 Config.DisableCriticalHits = false 
 Config.WeaponDamage = {
