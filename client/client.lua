@@ -329,10 +329,15 @@ CreateThread(function()
 end)
 
 CreateThread(function()
+
+    if not Config.DisableSprintWhileAiming then 
+        return 
+    end
+
     while true do
         Wait(1)
         if IsPlayerFreeAiming(PlayerId()) then
-            DisableControlAction(0, 0x8FFC75D6, true)
+            DisableControlAction(0, 0x8FFC75D6, true) 
         end
     end
 end)
