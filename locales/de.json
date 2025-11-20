@@ -1,0 +1,32 @@
+{
+    "cl_no_arrow": "Keine Pfeile",
+    "cl_no_arrow_fire": "Keine Brandpfeile",
+    "cl_no_arrow_poison": "Keine Giftpfeile",
+    "cl_no_arrow_explosive": "Keine Sprengpfeile",
+    "cl_no_arrows_your_inventory_load": "Keine Pfeile im Inventar zum Laden",
+    
+    "cl_weapon_degraded": "Die Waffe ist beschädigt!",
+    "cl_repairing_weapon": "Waffe wird repariert...",
+    
+    "cl_no_weapon_found": "Keine Waffe gefunden",
+    "cl_no_weapon_found_desc": "Du musst die Waffe in der Hand halten",
+    
+    "cl_weapon_repair": "Waffe reparieren",
+    "cl_weapon_repair_p": "Waffe reparieren",
+    
+    "cl_reapir_yes": "Ja",
+    "cl_reapir_no": "Nein",
+    
+    "cl_item_need": "Benötigter Gegenstand",
+    "cl_item_need_desc": "Du benötigst ein Waffenreparatur-Kit!",
+    
+    "cl_ammo_max": "Maximale Munition erreicht!",
+    
+    "cl_lang_1": "Unendlich Munition aktiviert.",
+    "cl_lang_2": "Unendlich Munition deaktiviert.",
+    "cl_lang_3": "Unendlich Munition",
+    "cl_lang_4": "Du hältst keine Waffe.",
+    
+    "sv_weapon_repair": "Waffe reparieren",
+    "sv_weapon_reloaded": "Waffe nachgeladen"
+}

@@ -1,10 +1,44 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
 lib.locale()
 local UsedWeapons = {}
+local UsedEquipment = {} -- Track equipped knives, tools, etc.
 local weaponInHands = {}
 local degradeQueue = {}
 local weaponDataLookup = {}
 local currentWeaponSerial = nil
+
+---------------------------------------------------------------------
+-- Check if weapon limit is reached for a category
+---------------------------------------------------------------------
+local function IsWeaponLimitReached(weaponName)
+    local category = Config.GetWeaponCategory(weaponName)
+    local limit = Config.WeaponLimits[category] or 999
+    
+    -- Count currently equipped weapons in this category
+    local count = 0
+    
+    -- Count from UsedWeapons (guns)
+    for serial, weaponData in pairs(UsedWeapons) do
+        local wepCategory = Config.GetWeaponCategory(weaponData.name)
+        if wepCategory == category then
+            count = count + 1
+        end
+    end
+    
+    -- Count from UsedEquipment (melee, tools)
+    for equipName, _ in pairs(UsedEquipment) do
+        local equipCategory = Config.GetWeaponCategory(equipName)
+        if equipCategory == category then
+            count = count + 1
+        end
+    end
+    
+    if Config.Debug then
+        print(string.format("Category: %s | Count: %d | Limit: %d", category, count, limit))
+    end
+    
+    return count >= limit, category, count, limit
+end
 
 for _, v in ipairs(Config.WeaponDamage) do
     local hash = GetHashKey(v.Name)
@@ -140,6 +174,18 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData)
         end
 
         if not UsedWeapons[wepSerial] then
+            -- Check weapon limit before equipping
+            local limitReached, category, count, limit = IsWeaponLimitReached(weaponName)
+            if limitReached then
+                local categoryName = Config.WeaponCategoryNames[category] or category
+                lib.notify({
+                    title = 'Waffenlimit erreicht',
+                    description = string.format('Du kannst nur %d %s tragen! (%d/%d)', limit, categoryName, count, limit),
+                    type = 'error',
+                    duration = 5000
+                })
+                return
+            end
             UsedWeapons[wepSerial] = {
                 name = weaponData.name,
                 WeaponHash = hash,
@@ -263,13 +309,28 @@ RegisterNetEvent('rsg-weapons:client:UseEquipment', function(weaponData)
     end
 
     if not HasPedGotWeapon(cache.ped, hash) then
+        -- Check weapon limit before equipping
+        local limitReached, category, count, limit = IsWeaponLimitReached(weaponName)
+        if limitReached then
+            local categoryName = Config.WeaponCategoryNames[category] or category
+            lib.notify({
+                title = 'Waffenlimit erreicht',
+                description = string.format('Du kannst nur %d %s tragen! (%d/%d)', limit, categoryName, count, limit),
+                type = 'error',
+                duration = 5000
+            })
+            return
+        end
+        
         GiveWeaponToPed(cache.ped, hash, 0, false, true)
         SetCurrentPedWeapon(cache.ped, hash, true)
+        UsedEquipment[weaponName] = true -- Track equipped equipment
         if Config.SaveEquippedWeapons then
             TriggerServerEvent('rsg-weapons:server:saveEquippedKnife', weaponName, true)
         end
     else
         RemoveWeaponFromPed(cache.ped, hash)
+        UsedEquipment[weaponName] = nil -- Remove from tracking
         if Config.SaveEquippedWeapons then
             TriggerServerEvent('rsg-weapons:server:saveEquippedKnife', weaponName, false)
         end
@@ -489,6 +550,7 @@ RegisterNetEvent('RSGCore:Client:OnPlayerLoaded', function()
             if equippedKnives and next(equippedKnives) ~= nil then
                 for knifeName, _ in pairs(equippedKnives) do
                     Wait(500)
+                    UsedEquipment[knifeName] = true -- Track on login
                     local fakeWeaponData = { name = knifeName, info = {} }
                     TriggerEvent('rsg-weapons:client:UseEquipment', fakeWeaponData)
                     Wait(1000)
@@ -520,6 +582,9 @@ AddEventHandler('onResourceStop', function(name)
     if Config.SaveEquippedWeapons then
         for serial, data in pairs(UsedWeapons) do
             TriggerServerEvent('rsg-weapons:server:saveEquippedWeapon', data.data, false)
+        end
+        for equipName, _ in pairs(UsedEquipment) do
+            TriggerServerEvent('rsg-weapons:server:saveEquippedKnife', equipName, false)
         end
     end
 end)
