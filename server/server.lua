@@ -82,8 +82,13 @@ RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then return end
 
-    local kitCount = Player.Functions.GetItemCount('weapon_repair_kit')
-    if not kitCount or kitCount < 1 then
+    local kitCount = 0
+    for _, v in pairs(Player.PlayerData.items) do
+        if v.name == 'weapon_repair_kit' then
+            kitCount = kitCount + (v.amount or 1)
+        end
+    end
+    if kitCount < 1 then
         TriggerClientEvent('ox_lib:notify', src, {title = locale('cl_item_need'), type = 'error', duration = 5000 })
         return
     end
@@ -115,8 +120,13 @@ AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then return end
     if not RSGCore.Shared.Items[item] then return end
-    local count = Player.Functions.GetItemCount(item)
-    if not count or count < (amount or 1) then return end
+    local count = 0
+    for _, v in pairs(Player.PlayerData.items) do
+        if v.name == item then
+            count = count + (v.amount or 1)
+        end
+    end
+    if count < (amount or 1) then return end
     Player.Functions.RemoveItem(item, amount)
     TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', amount)
 end)
