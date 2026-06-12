@@ -211,7 +211,7 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData)
         TriggerEvent('rsg-weapons:client:brokenweapon', wepSerial)
 
         if Config.WeaponComponents then -- false need /loadweapon load
-            TriggerServerEvent("rsg-weaponcomp:server:removeComponents", "DEFUALT", weaponName, wepSerial)
+            TriggerServerEvent("rsg-weaponcomp:server:removeComponents", "DEFAULT", weaponName, wepSerial)
             Wait(0)
             TriggerServerEvent('rsg-weaponcomp:server:check_comps')
         end
@@ -281,7 +281,7 @@ end)
 ------------------------------------------
 CreateThread(function()
     while true do
-        Wait(1)
+        Wait(100)
         if IsPedShooting(cache.ped) then
             local heldWeapon = Citizen.InvokeNative(0x8425C5F057012DAB, cache.ped) -- GetPedCurrentHeldWeapon(
             local serialHeld = weaponInHands[heldWeapon]
@@ -362,7 +362,6 @@ RegisterNetEvent('rsg-weapons:client:repairweapon', function()
             },
             label = locale('cl_repairing_weapon'),
         })
-        TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', currentSerial)
         LocalPlayer.state:set("inv_busy", false, true) -- unlock inventory
     else
@@ -410,7 +409,6 @@ RegisterNetEvent('rsg-weapons:client:repairbrokenweapon', function(serial)
             },
             label = locale('cl_repairing_weapon'),
         })
-        TriggerServerEvent('rsg-weapons:server:removeitem', 'weapon_repair_kit', 1)
         TriggerServerEvent('rsg-weapons:server:repairweapon', serial)
         LocalPlayer.state:set("inv_busy", false, true) -- unlock inventory
     else

@@ -14,8 +14,21 @@ end)
 -----------------------------------
 -- Degrade Weapon
 -----------------------------------
+local cooldowns = {}
+
+local function isRateLimited(src)
+    local now = GetGameTimer()
+    if cooldowns[src] and now - cooldowns[src] < 100 then
+        return true
+    end
+    cooldowns[src] = now
+    return false
+end
+
 RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(degradationQueue) 
     local src = source
+    if isRateLimited(src) then return end
+
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then 
         return 
@@ -23,6 +36,10 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(degradationQueue)
     local items = Player.PlayerData.items
     local hasChanged = false
     for serial, shotCount in pairs(degradationQueue) do
+        if type(serial) ~= 'string' or #serial > 32 then return end
+        local capped = math.min(shotCount or 0, 10)
+        if capped <= 0 then return end
+
         local svslot = nil
         for _, v in pairs(items) do
             if v.type == 'weapon' and v.info.serie == serial then
@@ -31,7 +48,7 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(degradationQueue)
             end
         end
         if svslot and items[svslot] then
-            local totalDegradation = (Config.DegradeRate * shotCount)
+            local totalDegradation = (Config.DegradeRate * capped)
             local currentQuality = items[svslot].info.quality
             local newQuality = currentQuality - totalDegradation
 
@@ -63,15 +80,28 @@ end)
 RegisterNetEvent('rsg-weapons:server:repairweapon', function(serie)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
+    if not Player then return end
+
+    local kitCount = Player.Functions.GetItemCount('weapon_repair_kit')
+    if not kitCount or kitCount < 1 then
+        TriggerClientEvent('ox_lib:notify', src, {title = locale('cl_item_need'), type = 'error', duration = 5000 })
+        return
+    end
+    Player.Functions.RemoveItem('weapon_repair_kit', 1)
+
     local svslot = nil
     for _, v in pairs(Player.PlayerData.items) do
-        if v.type == 'weapon' then
-            if v.info.serie == serie then
-                svslot = v.slot
-                Player.PlayerData.items[svslot].info.quality = 100
-            end
+        if v.type == 'weapon' and v.info.serie == serie then
+            svslot = v.slot
+            break
         end
     end
+    if not svslot then
+        Player.Functions.AddItem('weapon_repair_kit', 1)
+        return
+    end
+
+    Player.PlayerData.items[svslot].info.quality = 100
     Player.Functions.SetInventory(Player.PlayerData.items)
     TriggerClientEvent('ox_lib:notify', src, {title = locale('sv_weapon_repaired'), type = 'success', duration = 5000 })
 end)
@@ -83,6 +113,10 @@ RegisterServerEvent('rsg-weapons:server:removeitem')
 AddEventHandler('rsg-weapons:server:removeitem', function(item, amount)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
+    if not Player then return end
+    if not RSGCore.Shared.Items[item] then return end
+    local count = Player.Functions.GetItemCount(item)
+    if not count or count < (amount or 1) then return end
     Player.Functions.RemoveItem(item, amount)
     TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', amount)
 end)
@@ -91,6 +125,19 @@ RegisterNetEvent('rsg-weapons:server:saveEquippedWeapon', function(weaponData, i
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then return end
+    if type(weaponData) ~= 'table' or type(weaponData.info) ~= 'table' then return end
+
+    if isEquipped then
+        local found = false
+        for _, v in pairs(Player.PlayerData.items) do
+            if v.type == 'weapon' and v.info.serie == weaponData.info.serie then
+                found = true
+                break
+            end
+        end
+        if not found then return end
+    end
+
     local equippedWeapons = Player.PlayerData.metadata.equippedweapons or {}
     if isEquipped then
         equippedWeapons[weaponData.info.serie] = {
@@ -108,6 +155,19 @@ RegisterNetEvent('rsg-weapons:server:saveEquippedKnife', function(knifeName, equ
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
     if not Player then return end
+    if type(knifeName) ~= 'string' then return end
+
+    if equipped then
+        local found = false
+        for _, v in pairs(Player.PlayerData.items) do
+            if v.name == knifeName then
+                found = true
+                break
+            end
+        end
+        if not found then return end
+    end
+
     local equippedKnives = Player.PlayerData.metadata.equippedknives or {}
     if equipped then
         equippedKnives[knifeName] = true
