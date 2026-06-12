@@ -20,5 +20,6 @@
     "cl_lang_3" : "Infinity Ammo",
     "cl_lang_4" : "You are not holding a weapon.",
     "sv_weapon_repair": "Επισκευή Όπλου",
-    "sv_weapon_reloaded": "Το όπλο γεμίστηκε ξανά"
+    "sv_weapon_reloaded": "Το όπλο γεμίστηκε ξανά",
+    "sv_weapon_repaired": "Το όπλο επισκευάστηκε"
 }

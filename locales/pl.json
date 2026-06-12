@@ -20,5 +20,6 @@
     "cl_lang_3": "Nieskończona amunicja",
     "cl_lang_4": "Nie trzymasz broni.",
     "sv_weapon_repair": "Napraw broń",
-    "sv_weapon_reloaded": "Broń przeładowana"
+    "sv_weapon_reloaded": "Broń przeładowana",
+    "sv_weapon_repaired": "Broń naprawiona"
 }

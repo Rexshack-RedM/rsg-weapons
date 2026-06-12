@@ -20,5 +20,6 @@
     "cl_lang_3" : "Infinity Ammo",
     "cl_lang_4" : "You are not holding a weapon.",
     "sv_weapon_repair": "Réparer l'arme",
-    "sv_weapon_reloaded": "Arme rechargée"
+    "sv_weapon_reloaded": "Arme rechargée",
+    "sv_weapon_repaired": "Arme réparée"
 }
