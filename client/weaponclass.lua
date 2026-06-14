@@ -39,11 +39,6 @@ local moveInventoryItem = function(inventoryId, old, new, slot)
 end
 
 WeaponAPI.EquipWeapon = function(weaponName, slot, id, hash)
-    if slot == 0 and id then
-        if #EquippedWeapons > 0 then
-            slot = 1
-        end
-    end
     local weaponHash = joaat(weaponName)
     local slotHash = joaat("SLOTID_WEAPON_" .. tostring(slot))
     local addReason = ADD_REASON_DEFAULT

@@ -149,23 +149,15 @@ RegisterNetEvent('rsg-weapons:client:UseWeapon', function(weaponData)
 
             if weaponName == 'weapon_bow' or weaponName == 'weapon_bow_improved' then
                 GiveWeaponToPed(cache.ped, hash, 0, false, true)
-                SetCurrentPedWeapon(cache.ped,hash,true)
-            end
-
-            if isWeaponAGun and isWeaponOneHanded then
+                SetCurrentPedWeapon(cache.ped, hash, true)
+            elseif isWeaponAGun and isWeaponOneHanded then
                 addWardrobeInventoryItem("CLOTHING_ITEM_M_OFFHAND_000_TINT_004", 0xF20B6B4A)
                 addWardrobeInventoryItem("UPGRADE_OFFHAND_HOLSTER", 0x39E57B01)
-                if WeaponAPI.used2 then
-                    WeaponAPI.EquipWeapon(weaponName, 1, wepSerial, hash)
-                else
-                    WeaponAPI.EquipWeapon(weaponName, 0, wepSerial, hash)
-                end
+                WeaponAPI.EquipWeapon(weaponName, 1, wepSerial, hash)
             else
                 GiveWeaponToPed(cache.ped, hash, 0, false, true)
-                SetCurrentPedWeapon(cache.ped,hash,true)
+                SetCurrentPedWeapon(cache.ped, hash, true)
             end
-
-            SetAmmoInClip(cache.ped, hash, 0)
 
             if Config.Debug then
                 print("Weapon Serial: "..wepSerial)
