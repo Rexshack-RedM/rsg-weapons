@@ -1,0 +1,26 @@
+{
+    "cl_no_arrow": "Sin Flechas",
+    "cl_no_arrow_fire": "Sin Flechas de Fuego",
+    "cl_no_arrow_poison": "Sin Flechas Venenosas",
+    "cl_no_arrow_explosive": "Sin Flechas Explosivas",
+    "cl_no_arrows_your_inventory_load": "no tienes flechas en tu inventario para cargar",
+    "cl_weapon_degraded": "¡El arma está degradada!",
+    "cl_repairing_weapon": "Reparando Arma",
+    "cl_no_weapon_found": "No se encontró el arma",
+    "cl_no_weapon_found_desc": "debes tener el arma en mano",
+    "cl_weapon_repair": "Reparar Arma",
+    "cl_weapon_repair_p": "Reparar Arma",
+    "cl_reapir_yes": "Sí",
+    "cl_reapir_no": "No",
+    "cl_item_need": "Se necesita un objeto",
+    "cl_item_need_desc": "¡se necesita un kit de reparación de armas!",
+    "cl_ammo_max": "Max ammo reached!",
+    "cl_lang_1" : "Infinite ammo enabled.",
+    "cl_lang_2" : "Infinite ammo disabled.",
+    "cl_lang_3" : "Infinity Ammo",
+    "cl_lang_4" : "You are not holding a weapon.",
+    "sv_weapon_repair": "Reparar Arma",
+    "sv_weapon_reloaded": "Arma Recargada",
+    "sv_weapon_repaired": "Arma Reparada"
+}
+    
