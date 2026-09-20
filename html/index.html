@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wagon Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="shop-container" class="hidden">
+        <div id="vignette"></div>
+        <div class="shop-panel">
+            <div class="panel-header">
+                <button class="circle-btn" id="header-back" title="Back">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <div class="title-wrap">
+                    <h1 class="shop-name" id="shop-name">WAGON SHOP</h1>
+                    <div class="section-divider"><span>&#10022;</span></div>
+                    <p class="shop-subtitle" id="shop-subtitle">Quality Wagons &amp; Supplies</p>
+                </div>
+                <button class="circle-btn" id="close-btn" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="money-bar">
+                <div class="money-item cash">
+                    <span class="icon-badge sm"><i class="fa-solid fa-dollar-sign"></i></span>
+                    <span class="money-label">Cash</span>
+                    <span class="money-value" id="player-cash">$0.00</span>
+                </div>
+                <div class="money-divider"></div>
+                <div class="money-item gold">
+                    <span class="icon-badge sm"><i class="fa-solid fa-coins"></i></span>
+                    <span class="money-label">Gold</span>
+                    <span class="money-value" id="player-gold">0</span>
+                </div>
+            </div>
+
+            <div class="nav-tabs" id="nav-tabs">
+                <button class="nav-btn active" data-view="store">
+                    <i class="fa-solid fa-store"></i> Store
+                </button>
+                <button class="nav-btn" data-view="mywagons">
+                    <i class="fa-solid fa-box"></i> My Wagons
+                </button>
+            </div>
+
+            <div class="shop-content">
+                <div class="view" id="view-store">
+                    <div class="category-grid" id="category-grid">
+                    </div>
+                    <div class="wagon-grid-wrapper hidden" id="wagon-grid-wrapper">
+                        <div class="wagon-grid-header">
+                            <button class="circle-btn" id="btn-back-category" title="Back">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <h2 id="category-title">Category</h2>
+                        </div>
+                        <div class="wagon-grid" id="wagon-grid"></div>
+                        <div class="no-items hidden" id="no-wagons">
+                            <i class="fa-solid fa-box-open"></i>
+                            <p>No wagons available</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view hidden" id="view-mywagons">
+                    <div class="mywagons-layout">
+                        <div class="mywagons-list" id="mywagons-list">
+                            <h3><i class="fa-solid fa-box"></i> Your Wagons</h3>
+                            <div id="mywagons-items"></div>
+                            <div class="no-items" id="no-mywagons">
+                                <i class="fa-solid fa-horse"></i>
+                                <p>You don&#39;t own any wagons</p>
+                            </div>
+                        </div>
+                        <div class="wagon-detail-panel hidden" id="wagon-detail-panel">
+                            <div class="detail-panel-header">
+                                <h3 id="detail-wagon-name">Wagon Name</h3>
+                                <span class="detail-wagon-model" id="detail-wagon-model">Model</span>
+                            </div>
+                            <div class="section-divider"><span>&#10022;</span></div>
+                            <div class="detail-actions" id="detail-actions"></div>
+                            <div class="customize-section hidden" id="customize-section">
+                                <h4><i class="fa-solid fa-paintbrush"></i> Customize</h4>
+                                <div class="customize-options" id="customize-options"></div>
+                                <div class="customize-preview hidden" id="customize-preview">
+                                    <div class="customize-preview-header">
+                                        <span id="customize-preview-title">Select Option</span>
+                                        <button class="circle-btn" id="btn-back-customize" title="Back">
+                                            <i class="fa-solid fa-chevron-left"></i>
+                                        </button>
+                                    </div>
+                                    <div class="customize-items" id="customize-items"></div>
+                                    <div class="stat-block">
+                                        <div class="stat-row">
+                                            <span class="stat-label">Condition</span>
+                                            <div class="stat-track"><div class="stat-fill stat-good" id="customize-stat-fill" style="width: 70%;"></div></div>
+                                        </div>
+                                    </div>
+                                    <div class="customize-actions">
+                                        <button class="wood-btn muted" id="btn-cancel-customize">
+                                            <i class="fa-solid fa-xmark"></i> Cancel
+                                        </button>
+                                        <button class="wood-btn" id="btn-save-customize" disabled>
+                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="view hidden" id="view-chop">
+                    <div class="chop-layout">
+                        <div class="chop-icon"><i class="fa-solid fa-hammer"></i></div>
+                        <h2 id="chop-wagon-name">Wagon</h2>
+                        <span class="detail-wagon-model" id="chop-wagon-model">Model</span>
+                        <div class="section-divider"><span>&#10022;</span></div>
+                        <div class="chop-rewards" id="chop-rewards"></div>
+                        <p class="chop-note hidden" id="chop-owned-note"></p>
+                        <div class="customize-actions">
+                            <button class="wood-btn muted" id="btn-chop-cancel">
+                                <i class="fa-solid fa-xmark"></i> Cancel
+                            </button>
+                            <button class="wood-btn" id="btn-chop-confirm">
+                                <i class="fa-solid fa-hammer"></i> Scrap Wagon
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="shop-footer">
+                <div class="footer-info">
+                    <i class="fa-solid fa-info-circle"></i>
+                    <span id="footer-hint">Browse wagon categories to find your perfect wagon</span>
+                </div>
+                <div class="footer-actions">
+                    <button class="circle-btn" id="rotate-left" title="Rotate Left">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button class="circle-btn" id="rotate-right" title="Rotate Right">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="name-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container name-modal">
+            <div class="modal-header">
+                <h2>Name Your Wagon</h2>
+            </div>
+            <div class="ink-divider"></div>
+            <div class="modal-body">
+                <p>Give your new wagon a name</p>
+                <input type="text" class="name-input" id="name-input" placeholder="Enter wagon name..." maxlength="16">
+            </div>
+            <div class="modal-footer">
+                <button class="wood-btn muted" id="name-modal-cancel"><i class="fa-solid fa-arrow-left"></i> Cancel</button>
+                <button class="wood-btn" id="name-modal-confirm"><i class="fa-solid fa-check"></i> Confirm</button>
+            </div>
+            <button class="circle-btn modal-x" id="name-modal-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-container confirm-modal">
+            <div class="modal-header">
+                <h2 id="confirm-title">Confirm</h2>
+            </div>
+            <div class="ink-divider"></div>
+            <div class="modal-body">
+                <p id="confirm-message">Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="wood-btn muted" id="confirm-modal-cancel"><i class="fa-solid fa-xmark"></i> No</button>
+                <button class="wood-btn" id="confirm-modal-confirm"><i class="fa-solid fa-check"></i> Yes</button>
+            </div>
+            <button class="circle-btn modal-x" id="confirm-modal-close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <div id="success-overlay" class="success-overlay hidden">
+        <div class="success-content modal-container">
+            <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+            <h2>Success!</h2>
+            <div class="ink-divider"></div>
+            <p id="success-message">Action completed</p>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    <script src="script.js"></script>
+</body>
+</html>
