@@ -326,10 +326,13 @@ CreateThread(function()
         return 
     end
 
+    local playerId = PlayerId()
     while true do
-        Wait(1)
-        if IsPlayerFreeAiming(PlayerId()) then
-            DisableControlAction(0, 0x8FFC75D6, true) 
+        if IsPlayerFreeAiming(playerId) then
+            DisableControlAction(0, 0x8FFC75D6, true)
+            Wait(0)
+        else
+            Wait(50) -- idle while not aiming (was every frame)
         end
     end
 end)
