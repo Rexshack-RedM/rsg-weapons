@@ -1,9 +1,4 @@
 {
-    "cl_no_arrow": "Nessuna freccia",
-    "cl_no_arrow_fire": "Nessuna freccia infuocata",
-    "cl_no_arrow_poison": "Nessuna freccia avvelenata",
-    "cl_no_arrow_explosive": "Nessuna freccia esplosiva",
-    "cl_no_arrows_your_inventory_load": "nessuna freccia nell'inventario da caricare",
     "cl_weapon_degraded": "l'arma è rovinata!",
     "cl_repairing_weapon": "Ripara Arma",
     "cl_no_weapon_found": "Nessuna arma trovata",
@@ -15,11 +10,14 @@
     "cl_item_need": "Oggetto Necessario",
     "cl_item_need_desc": "kit di riparazione necessario!",
     "cl_ammo_max": "Max ammo reached!",
-    "cl_lang_1" : "Infinite ammo enabled.",
-    "cl_lang_2" : "Infinite ammo disabled.",
-    "cl_lang_3" : "Infinity Ammo",
-    "cl_lang_4" : "You are not holding a weapon.",
+    "cl_lang_1": "Infinite ammo enabled.",
+    "cl_lang_2": "Infinite ammo disabled.",
+    "cl_lang_3": "Infinity Ammo",
+    "cl_lang_4": "You are not holding a weapon.",
     "sv_weapon_repair": "Ripara Arma",
-    "sv_weapon_reloaded": "Arma Ricaricata",
-    "sv_weapon_repaired": "Arma Riparata"
+    "sv_weapon_repaired": "Arma Riparata",
+    "cl_dual_wield_full": "You already have a weapon in both hands",
+    "cl_dual_wield_failed": "Unable to equip weapon",
+    "sv_weapon_not_damaged": "This weapon does not need repairing",
+    "sv_no_permission": "You do not have permission to use this command."
 }

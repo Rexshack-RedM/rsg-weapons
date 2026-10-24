@@ -1,9 +1,4 @@
 {
-    "cl_no_arrow": "Sem Flechas",
-    "cl_no_arrow_fire": "Sem Flechas de Fogo",
-    "cl_no_arrow_poison": "Sem Flechas de Veneno",
-    "cl_no_arrow_explosive": "Sem Flechas Explosivas",
-    "cl_no_arrows_your_inventory_load": "não há flechas no seu inventário para carregar",
     "cl_weapon_degraded": "a arma está degradada!",
     "cl_repairing_weapon": "Reparando Arma",
     "cl_no_weapon_found": "Nenhuma Arma Encontrada",
@@ -15,11 +10,14 @@
     "cl_item_need": "Item Necessário",
     "cl_item_need_desc": "é necessário um kit de reparo de armas!",
     "cl_ammo_max": "Munição máxima atingida!",
-    "cl_lang_1" : "Munição infinita ativada.",
-    "cl_lang_2" : "Munição infinita desativada.",
-    "cl_lang_3" : "Munição Infinita",
-    "cl_lang_4" : "Você não está segurando uma arma.",
+    "cl_lang_1": "Munição infinita ativada.",
+    "cl_lang_2": "Munição infinita desativada.",
+    "cl_lang_3": "Munição Infinita",
+    "cl_lang_4": "Você não está segurando uma arma.",
     "sv_weapon_repair": "Reparar Arma",
-    "sv_weapon_reloaded": "Arma Recarregada",
-    "sv_weapon_repaired": "Arma Reparada"
+    "sv_weapon_repaired": "Arma Reparada",
+    "cl_dual_wield_full": "You already have a weapon in both hands",
+    "cl_dual_wield_failed": "Unable to equip weapon",
+    "sv_weapon_not_damaged": "This weapon does not need repairing",
+    "sv_no_permission": "You do not have permission to use this command."
 }

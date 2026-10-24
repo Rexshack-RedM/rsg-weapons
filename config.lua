@@ -1,22 +1,21 @@
 Config = {}
 
 Config.Debug = false
-Config.WeaponComponents = true -- true or false with script custom weapon (note with false can use /loadweapon for equiped) 
+Config.WeaponComponents = true -- sync components with rsg-weaponcomp when equipping / breaking weapons
 
-Config.SaveEquippedWeapons = true
+Config.SaveEquippedWeapons = true -- re-equip weapons and knives on login
 
--- settings
---Config.UpdateAmmo = 10000 -- amount of time before saving player ammo in miliseconds
-Config.RepairTime = 30000
+-- repair
+Config.RepairTime = 30000 -- ms the repair progress bar takes (also enforced server-side)
 
 -- weapon degradation
-Config.DegradeRate = 0.01
-Config.UpdateDegrade = 5000
+Config.DegradeRate = 0.01 -- quality lost per shot
+Config.UpdateDegrade = 5000 -- ms between sending shot batches to the server
 
 Config.DisableSprintWhileAiming = true
 
 --- Damage Weapon
-Config.DisableCriticalHits = false 
+Config.DisableCriticalHits = false
 Config.WeaponDamage = {
     -- Melee
     {Name = 'WEAPON_UNARMED', Damage = 1.0},

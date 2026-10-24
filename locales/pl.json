@@ -1,9 +1,4 @@
 {
-    "cl_no_arrow": "Brak strzał",
-    "cl_no_arrow_fire": "Brak strzał ogniowych",
-    "cl_no_arrow_poison": "Brak strzał trujących",
-    "cl_no_arrow_explosive": "Brak dynamitu/eksplozji",
-    "cl_no_arrows_your_inventory_load": "Brak strzał w ekwipunku do załadowania",
     "cl_weapon_degraded": "Broń jest zużyta!",
     "cl_repairing_weapon": "Naprawianie broni",
     "cl_no_weapon_found": "Nie znaleziono broni",
@@ -20,6 +15,9 @@
     "cl_lang_3": "Nieskończona amunicja",
     "cl_lang_4": "Nie trzymasz broni.",
     "sv_weapon_repair": "Napraw broń",
-    "sv_weapon_reloaded": "Broń przeładowana",
-    "sv_weapon_repaired": "Broń naprawiona"
+    "sv_weapon_repaired": "Broń naprawiona",
+    "cl_dual_wield_full": "You already have a weapon in both hands",
+    "cl_dual_wield_failed": "Unable to equip weapon",
+    "sv_weapon_not_damaged": "This weapon does not need repairing",
+    "sv_no_permission": "You do not have permission to use this command."
 }
