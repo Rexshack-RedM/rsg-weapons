@@ -1,0 +1,21 @@
+{
+    "cl_weapon_degraded": "武器が壊れています！",
+    "cl_weapon_broken_hint": "武器修理キットを使って修理してください。",
+    "cl_repairing_weapon": "武器を修理中",
+    "cl_repair_cancelled": "修理を中止しました。キットは消費されていません。",
+    "cl_no_weapon_found": "武器が見つかりません",
+    "cl_no_weapon_found_desc": "修理が必要な武器を持っていません",
+    "cl_item_need": "アイテムが必要です",
+    "cl_item_need_desc": "武器修理キットが必要です！",
+    "cl_ammo_max": "弾薬が上限に達しています！",
+    "cl_infinite_ammo_title": "無限弾薬",
+    "cl_infinite_ammo_on": "無限弾薬を有効にしました。",
+    "cl_infinite_ammo_off": "無限弾薬を無効にしました。",
+    "cl_no_weapon_in_hand": "武器を持っていません。",
+    "cl_dual_wield_full": "すでに両手に武器を持っています",
+    "cl_dual_wield_failed": "武器を装備できません",
+    "sv_weapon_repair": "武器の修理",
+    "sv_weapon_repaired": "%sを修理しました",
+    "sv_weapon_not_damaged": "この武器は修理の必要がありません",
+    "sv_no_permission": "このコマンドを使用する権限がありません。"
+}

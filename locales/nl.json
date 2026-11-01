@@ -1,0 +1,21 @@
+{
+    "cl_weapon_degraded": "Je wapen is kapot!",
+    "cl_weapon_broken_hint": "Gebruik een wapenreparatieset om het te repareren.",
+    "cl_repairing_weapon": "Wapen repareren",
+    "cl_repair_cancelled": "Reparatie geannuleerd. Je set is niet gebruikt.",
+    "cl_no_weapon_found": "Geen wapen gevonden",
+    "cl_no_weapon_found_desc": "Je hebt geen beschadigde wapens om te repareren",
+    "cl_item_need": "Item nodig",
+    "cl_item_need_desc": "Wapenreparatieset nodig!",
+    "cl_ammo_max": "Maximale munitie bereikt!",
+    "cl_infinite_ammo_title": "Oneindige munitie",
+    "cl_infinite_ammo_on": "Oneindige munitie ingeschakeld.",
+    "cl_infinite_ammo_off": "Oneindige munitie uitgeschakeld.",
+    "cl_no_weapon_in_hand": "Je houdt geen wapen vast.",
+    "cl_dual_wield_full": "Je hebt al een wapen in beide handen",
+    "cl_dual_wield_failed": "Kan wapen niet uitrusten",
+    "sv_weapon_repair": "Wapen repareren",
+    "sv_weapon_repaired": "%s gerepareerd",
+    "sv_weapon_not_damaged": "Dit wapen hoeft niet gerepareerd te worden",
+    "sv_no_permission": "Je hebt geen toestemming om dit commando te gebruiken."
+}

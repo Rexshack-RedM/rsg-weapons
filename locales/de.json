@@ -1,0 +1,21 @@
+{
+    "cl_weapon_degraded": "Deine Waffe ist kaputt!",
+    "cl_weapon_broken_hint": "Benutze ein Waffenreparaturset, um sie zu reparieren.",
+    "cl_repairing_weapon": "Waffe wird repariert",
+    "cl_repair_cancelled": "Reparatur abgebrochen. Dein Set wurde nicht verbraucht.",
+    "cl_no_weapon_found": "Keine Waffe gefunden",
+    "cl_no_weapon_found_desc": "Du hast keine beschädigten Waffen zum Reparieren",
+    "cl_item_need": "Gegenstand benötigt",
+    "cl_item_need_desc": "Waffenreparaturset benötigt!",
+    "cl_ammo_max": "Maximale Munition erreicht!",
+    "cl_infinite_ammo_title": "Unendliche Munition",
+    "cl_infinite_ammo_on": "Unendliche Munition aktiviert.",
+    "cl_infinite_ammo_off": "Unendliche Munition deaktiviert.",
+    "cl_no_weapon_in_hand": "Du hältst keine Waffe.",
+    "cl_dual_wield_full": "Du hast bereits in beiden Händen eine Waffe",
+    "cl_dual_wield_failed": "Waffe kann nicht ausgerüstet werden",
+    "sv_weapon_repair": "Waffe reparieren",
+    "sv_weapon_repaired": "%s repariert",
+    "sv_weapon_not_damaged": "Diese Waffe muss nicht repariert werden",
+    "sv_no_permission": "Du hast keine Berechtigung für diesen Befehl."
+}

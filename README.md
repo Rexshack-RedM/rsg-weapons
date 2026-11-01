@@ -31,15 +31,16 @@ All item and quality changes happen **on the server**. The client only reports w
 - Each shot lowers the quality of the gun that fired it.
 - When dual wielding, wear is shared between both hands.
 - The gun's look matches its quality (dirt and wear on the model).
-- At **quality 1 or less** the gun breaks: it is unequipped and the player is asked if they want to repair it.
+- At **quality 1 or less** the gun breaks: it is unequipped and the player is told to use a repair kit (no pop-up in the middle of a fight).
 
 ### 🧰 Repairs
-- Use a `weapon_repair_kit` while holding a gun to repair it back to 100%.
+- Use a `weapon_repair_kit` to repair a gun back to 100%: the gun in your hand, or if you're not holding one, the most worn gun you carry (so broken guns can be repaired too).
+- An equipped gun's model is cleaned up as soon as the repair finishes.
 - The progress bar can be cancelled, and the kit is only used when the repair finishes.
 - The server checks that the player has a kit, owns the weapon, the weapon is actually damaged, and the full repair time has passed.
 
 ### 💾 Saved loadout
-- Equipped guns and knives are re-equipped automatically when the player logs in.
+- Equipped guns and knives are re-equipped automatically when the player logs in, and after a restart of rsg-weapons.
 - Weapons that are broken or no longer in the inventory are skipped and removed from the saved list.
 
 ### 🎯 Other
@@ -48,7 +49,7 @@ All item and quality changes happen **on the server**. The client only reports w
 - Torch support.
 - `/infinityammo` for admins.
 - Optional: block sprinting while aiming, disable critical hits.
-- Fully localised with ox_lib JSON locales.
+- Fully localised with rsg-core JSON locales. No ox_lib needed.
 
 ---
 
@@ -58,9 +59,7 @@ All item and quality changes happen **on the server**. The client only reports w
 |---|---|---|
 | [rsg-core](https://github.com/Rexshack-RedM/rsg-core) | ✅ | Framework |
 | [rsg-inventory](https://github.com/Rexshack-RedM/rsg-inventory) | ✅ | Sends weapon use events, stores weapon quality |
-| [ox_lib](https://github.com/overextended/ox_lib) | ✅ | Callbacks, notifications, dialogs, progress bars, locales |
-| [oxmysql](https://github.com/overextended/oxmysql) | ✅ | Database |
-| [rsg-ammo](https://github.com/Rexshack-RedM/rsg-ammo) | ✅ | Ammo definitions for throwable weapons |
+| [rsg-ammo](https://github.com/Rexshack-RedM/rsg-ammo) | For throwables | Ammo definitions for throwable weapons |
 | [rsg-weaponcomp](https://github.com/Rexshack-RedM/rsg-weaponcomp) | Optional | Weapon components (`Config.WeaponComponents = true`) |
 
 ---
@@ -94,8 +93,6 @@ Weapons get their serial (`info.serie`) and quality (`info.quality`) from rsg-in
 In `server.cfg`, start rsg-weapons **after** its dependencies:
 
 ```cfg
-ensure oxmysql
-ensure ox_lib
 ensure rsg-core
 ensure rsg-inventory
 ensure rsg-ammo
@@ -193,8 +190,9 @@ Only items in this list (plus `weapon_melee_torch`) can be used up by the server
 | Use a gun from the inventory | Equips it (one-handed guns go to the right hand, then the left) |
 | Use the same gun again | Unequips it |
 | Use a third one-handed gun | Refused: "You already have a weapon in both hands" |
-| Use a repair kit while holding a gun | Starts the repair progress bar |
-| Gun breaks while shooting | Unequipped, with a prompt to repair it now |
+| Use a repair kit | Repairs the gun in hand, or the most worn gun you carry |
+| Cancel the repair | The kit is kept |
+| Gun breaks while shooting | Unequipped, with a message to use a repair kit |
 | Drop / give away an equipped gun | Automatically unequipped |
 | Use a throwable | Item is used up and ammo is added |
 | Use a knife | Toggles it on / off the belt |
@@ -213,15 +211,15 @@ Only items in this list (plus `weapon_melee_torch`) can be used up by the server
 
 Text lives in `locales/*.json`. Included languages:
 
-`en`, `cs`, `el`, `es`, `fr`, `it`, `pl`, `pt-br`, `ro`
+`en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro` (plus community `cs` and `it`)
 
-The server language follows ox_lib's locale setting:
+The server language follows rsg-core's locale setting:
 
 ```cfg
-setr ox:locale en
+setr rsg:locale en
 ```
 
-To add a language, copy `locales/en.json` to a new file (for example `de.json`) and translate the values. Keep the keys the same.
+To add a language, copy `locales/en.json` to a new file and translate the values. Keep the keys and `%s` placeholders the same.
 
 ---
 
@@ -253,6 +251,7 @@ exports['rsg-weapons']:RemoveWeaponFromPeds('weapon_revolver_cattleman', serial)
 | `rsg-weapons:client:UseWeapon` | Full weapon item (`{ name, info = { serie, quality } }`), or `{ name }` when the weapon left the inventory |
 | `rsg-weapons:client:UseThrownWeapon` | Throwable item |
 | `rsg-weapons:client:UseEquipment` | Knife / torch item |
+| `rsg-weapons:client:weaponRepaired` | Serial of the weapon that was just repaired (from the server) |
 
 ### Saved data
 Saved loadouts are stored in player metadata:
@@ -267,10 +266,24 @@ Saved loadouts are stored in player metadata:
 |---|---|
 | Second pistol won't equip | Make sure it's a one-handed gun (revolver/pistol) and you don't already have two equipped |
 | Throwables do nothing | The item must be in `Config.ThrowableWeaponAmmoTypes` and rsg-ammo must be started |
-| Repair does nothing | You need a `weapon_repair_kit`, must be holding the gun, and it must be below 100% |
+| Repair does nothing | You need a `weapon_repair_kit` and at least one gun below 100% |
 | Weapons don't come back after relog | `Config.SaveEquippedWeapons = true`, and the weapon must still be in the inventory and not broken |
 | `/infinityammo` says no permission | Give the player the `admin` permission |
 | Need more info | Set `Config.Debug = true` and check the F8 console |
+
+---
+
+## 📝 Changelog
+
+### 3.2.0
+- Removed ox_lib and oxmysql: rsg-core locales, notify, callbacks and progress bar.
+- Fixed: restarting rsg-weapons wiped every player's saved loadout. Loadouts are now kept and restored on restart.
+- Fixed: broken guns could not be repaired once the pop-up was closed. The repair kit now repairs the gun in hand or the most worn gun carried.
+- Fixed: repaired guns kept their worn look until re-equipped.
+- Fixed: infinite ammo stayed on after a resource restart.
+- Removed the broken-weapon pop-up dialog (it interrupted fights).
+- Added de, ja and nl locales; all locales updated.
+- Cooldown on the infinite ammo request, guards on all client events, wear loop idles when no gun is equipped.
 
 ---
 

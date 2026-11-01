@@ -1,8 +1,8 @@
 local RSGCore = exports['rsg-core']:GetCoreObject()
-lib.locale()
 
 local REPAIR_KIT = 'weapon_repair_kit'
 local degradeCooldown = {}
+local toggleCooldown = {}
 local pendingRepairs = {} -- [src] = { serial = string, started = ms }
 
 -- items the client is allowed to ask us to consume (throwables + torch)
@@ -15,11 +15,15 @@ end
 -- helpers
 ------------------------------------------
 local function notify(src, title, description, nType)
-    TriggerClientEvent('ox_lib:notify', src, { title = title, description = description, type = nType, duration = 5000 })
+    TriggerClientEvent('RSGCore:Client:Notify', src, { title = title, description = description, type = nType or 'inform', duration = 5000 })
 end
 
 local function isSerial(serial)
     return type(serial) == 'string' and #serial > 0 and #serial <= 32
+end
+
+local function getQuality(item)
+    return tonumber(item.info.quality) or 100
 end
 
 -- returns the live item table for a weapon serial the player owns
@@ -29,6 +33,17 @@ local function findWeapon(Player, serial)
             return v
         end
     end
+end
+
+-- the most worn weapon the player carries (used when no gun is held)
+local function findMostWorn(Player)
+    local worst
+    for _, v in pairs(Player.PlayerData.items) do
+        if v and v.type == 'weapon' and type(v.info) == 'table' and v.info.serie and getQuality(v) < 100 then
+            if not worst or getQuality(v) < getQuality(worst) then worst = v end
+        end
+    end
+    return worst
 end
 
 local function saveItems(src, Player)
@@ -55,9 +70,8 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(queue)
         shots = math.tointeger(tonumber(shots))
         if isSerial(serial) and shots and shots > 0 then
             local item = findWeapon(Player, serial)
-            if item then
-                local quality = (tonumber(item.info.quality) or 100) - Config.DegradeRate * math.min(shots, maxShotsPerBatch)
-                item.info.quality = math.max(quality, 0)
+            if item and getQuality(item) > 0 then
+                item.info.quality = math.max(getQuality(item) - Config.DegradeRate * math.min(shots, maxShotsPerBatch), 0)
                 changed = true
                 if item.info.quality <= 1 then broken[#broken + 1] = item end
             end
@@ -67,7 +81,7 @@ RegisterNetEvent('rsg-weapons:server:degradeWeapon', function(queue)
     if not changed then return end
     saveItems(src, Player)
     for _, item in ipairs(broken) do
-        TriggerClientEvent('rsg-weapons:client:UseWeapon', src, item) -- client unequips + offers repair
+        TriggerClientEvent('rsg-weapons:client:UseWeapon', src, item) -- client unequips + tells the player
     end
 end)
 
@@ -78,28 +92,30 @@ RSGCore.Functions.CreateUseableItem(REPAIR_KIT, function(source)
     TriggerClientEvent('rsg-weapons:client:repairweapon', source)
 end)
 
-lib.callback.register('rsg-weapons:server:startRepair', function(src, serial)
-    if not isSerial(serial) then return false end
+-- heldSerial is optional; returns the serial being repaired or false
+RSGCore.Functions.CreateCallback('rsg-weapons:server:startRepair', function(src, cb, heldSerial)
     local Player = RSGCore.Functions.GetPlayer(src)
-    if not Player then return false end
+    if not Player or pendingRepairs[src] then return cb(false) end
 
     if not exports['rsg-inventory']:HasItem(src, REPAIR_KIT, 1) then
         notify(src, locale('cl_item_need'), locale('cl_item_need_desc'), 'error')
-        return false
+        return cb(false)
     end
 
-    local item = findWeapon(Player, serial)
+    local item = isSerial(heldSerial) and findWeapon(Player, heldSerial)
+    if item and getQuality(item) >= 100 then
+        notify(src, locale('sv_weapon_repair'), locale('sv_weapon_not_damaged'), 'inform')
+        return cb(false)
+    end
+    item = item or findMostWorn(Player)
     if not item then
         notify(src, locale('cl_no_weapon_found'), locale('cl_no_weapon_found_desc'), 'error')
-        return false
-    end
-    if (tonumber(item.info.quality) or 100) >= 100 then
-        notify(src, locale('sv_weapon_repair'), locale('sv_weapon_not_damaged'), 'inform')
-        return false
+        return cb(false)
     end
 
+    local serial = tostring(item.info.serie)
     pendingRepairs[src] = { serial = serial, started = GetGameTimer() }
-    return true
+    cb(serial)
 end)
 
 RegisterNetEvent('rsg-weapons:server:finishRepair', function()
@@ -123,7 +139,8 @@ RegisterNetEvent('rsg-weapons:server:finishRepair', function()
 
     item.info.quality = 100
     saveItems(src, Player)
-    notify(src, locale('sv_weapon_repair'), locale('sv_weapon_repaired'), 'success')
+    TriggerClientEvent('rsg-weapons:client:weaponRepaired', src, pending.serial)
+    notify(src, locale('sv_weapon_repair'), locale('sv_weapon_repaired', item.label or item.name), 'success')
 end)
 
 RegisterNetEvent('rsg-weapons:server:cancelRepair', function()
@@ -133,12 +150,12 @@ end)
 ------------------------------------------
 -- consume a throwable / torch (only whitelisted items, always 1)
 ------------------------------------------
-lib.callback.register('rsg-weapons:server:consumeItem', function(src, item)
-    if type(item) ~= 'string' or not consumable[item] then return false end
-    if not RSGCore.Functions.GetPlayer(src) then return false end
-    if not exports['rsg-inventory']:RemoveItem(src, item, 1, nil, 'rsg-weapons:use') then return false end
+RSGCore.Functions.CreateCallback('rsg-weapons:server:consumeItem', function(src, cb, item)
+    if type(item) ~= 'string' or not consumable[item] then return cb(false) end
+    if not RSGCore.Functions.GetPlayer(src) then return cb(false) end
+    if not exports['rsg-inventory']:RemoveItem(src, item, 1, nil, 'rsg-weapons:use') then return cb(false) end
     TriggerClientEvent('rsg-inventory:client:ItemBox', src, RSGCore.Shared.Items[item], 'remove', 1)
-    return true
+    cb(true)
 end)
 
 ------------------------------------------
@@ -153,7 +170,7 @@ RegisterNetEvent('rsg-weapons:server:saveEquippedWeapon', function(serial, isEqu
     local equipped = Player.PlayerData.metadata.equippedweapons or {}
     if isEquipped then
         local item = findWeapon(Player, serial)
-        if not item then return end
+        if not item or equipped[serial] then return end
         equipped[serial] = { name = item.name, serie = serial }
     else
         if not equipped[serial] then return end
@@ -171,7 +188,7 @@ RegisterNetEvent('rsg-weapons:server:saveEquippedKnife', function(knifeName, isE
     local equipped = Player.PlayerData.metadata.equippedknives or {}
     if isEquipped then
         local shared = RSGCore.Shared.Items[knifeName]
-        if not shared or shared.type ~= 'equipment' then return end
+        if not shared or shared.type ~= 'equipment' or equipped[knifeName] then return end
         if not exports['rsg-inventory']:HasItem(src, knifeName, 1) then return end
         equipped[knifeName] = true
     else
@@ -181,16 +198,16 @@ RegisterNetEvent('rsg-weapons:server:saveEquippedKnife', function(knifeName, isE
     Player.Functions.SetMetaData('equippedknives', equipped)
 end)
 
--- returns the weapon items to re-equip on login (owned and not broken) and knife names
-lib.callback.register('rsg-weapons:server:getEquipped', function(src)
+-- weapons to re-equip on login (owned and not broken) and knife names
+RSGCore.Functions.CreateCallback('rsg-weapons:server:getEquipped', function(src, cb)
     local Player = RSGCore.Functions.GetPlayer(src)
-    if not Player then return {}, {} end
+    if not Player then return cb({ weapons = {}, knives = {} }) end
 
     local saved = Player.PlayerData.metadata.equippedweapons or {}
     local weapons, cleaned, dirty = {}, {}, false
     for serial, data in pairs(saved) do
         local item = isSerial(serial) and findWeapon(Player, serial)
-        if item and (tonumber(item.info.quality) or 100) > 1 then
+        if item and getQuality(item) > 1 then
             weapons[#weapons + 1] = item
             cleaned[serial] = data
         else
@@ -205,7 +222,7 @@ lib.callback.register('rsg-weapons:server:getEquipped', function(src)
             knives[#knives + 1] = name
         end
     end
-    return weapons, knives
+    cb({ weapons = weapons, knives = knives })
 end)
 
 ------------------------------------------
@@ -213,14 +230,20 @@ end)
 ------------------------------------------
 RegisterNetEvent('rsg-weapons:requestToggle', function()
     local src = source
+    local now = GetGameTimer()
+    if toggleCooldown[src] and now - toggleCooldown[src] < 1000 then return end
+    toggleCooldown[src] = now
+
     if RSGCore.Functions.HasPermission(src, 'admin') then
         TriggerClientEvent('rsg-weapons:toggle', src)
     else
-        notify(src, locale('cl_lang_3'), locale('sv_no_permission'), 'error')
+        notify(src, locale('cl_infinite_ammo_title'), locale('sv_no_permission'), 'error')
     end
 end)
 
 AddEventHandler('playerDropped', function()
-    degradeCooldown[source] = nil
-    pendingRepairs[source] = nil
+    local src = source
+    degradeCooldown[src] = nil
+    toggleCooldown[src] = nil
+    pendingRepairs[src] = nil
 end)

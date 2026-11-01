@@ -1,5 +1,4 @@
 WeaponAPI = {}
-WeaponAPI.used = false
 
 -- list of one-handed guns equipped through the inventory system
 -- { id = serial, name = weaponName, hash = weaponHash, guid = buffer, slot = 0 (right) | 1 (left) }
@@ -137,7 +136,6 @@ WeaponAPI.EquipWeapon = function(weaponName, id, hash)
     end
 
     attachToPed(playerPedId, itemData:Buffer(), slot)
-    WeaponAPI.used = true
 
     EquippedWeapons[#EquippedWeapons + 1] = {
         id = id,
@@ -171,7 +169,7 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
         end
     end
 
-    exports['rsg-weapons']:UsedWeapons(serial)
+    if WeaponAPI.OnRemoved then WeaponAPI.OnRemoved(serial) end -- keeps client.lua in sync when other resources call this export
 
     if removed and #EquippedWeapons > 0 then
         -- one gun left: if it is in the left hand, move it to the right hand
@@ -189,9 +187,6 @@ WeaponAPI.RemoveWeaponFromPeds = function(weaponName, serial)
         end
     else
         RemoveWeaponFromPed(playerPedId, weaponHash, true, 0)
-        if #EquippedWeapons == 0 then
-            WeaponAPI.used = false
-        end
     end
 end
 exports('RemoveWeaponFromPeds', WeaponAPI.RemoveWeaponFromPeds)
@@ -206,9 +201,20 @@ WeaponAPI.GetSerialInSlot = function(slot, hash)
     return nil
 end
 
+-- attach point (0 right, 1 left) of an equipped one-handed gun
+WeaponAPI.GetSlotForSerial = function(serial)
+    for _, v in ipairs(EquippedWeapons) do
+        if v.id == serial then return v.slot end
+    end
+    return nil
+end
+
+WeaponAPI.GetEquipped = function()
+    return EquippedWeapons
+end
+
 -- clear tracking (resource restart / character change)
 WeaponAPI.Reset = function()
     EquippedWeapons = {}
-    WeaponAPI.used = false
 end
 
