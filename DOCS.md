@@ -101,4 +101,4 @@ All item and quality changes happen on the server. The client only reports shots
 | Throwable has no ammo | Start rsg-ammo and check `ThrowableWeaponAmmoTypes` |
 | Loadout not restored | `SaveEquippedWeapons = true`; the item must still be in the inventory |
 
-Support: https://buymeacoffee.com/rexshack
+Support the Project : https://rexshack.tebex.store/
