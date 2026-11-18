@@ -102,3 +102,101 @@ All item and quality changes happen on the server. The client only reports shots
 | Loadout not restored | `SaveEquippedWeapons = true`; the item must still be in the inventory |
 
 Support the Project : https://rexshack.tebex.store/
+
+<!-- BEGIN AUTO-REFERENCE (generated from the code; re-run the generator instead of editing by hand) -->
+
+## Technical reference
+
+Generated from the source of **rsg-weapons 3.2.0**. Names, arguments and defaults below are read straight from the code.
+
+### Dependencies
+
+`rsg-core`, `rsg-inventory`
+
+### Configuration
+
+| Option | Default | Notes |
+|---|---|---|
+| `Config.Debug` | `false` |  |
+| `Config.WeaponComponents` | `true` | sync components with rsg-weaponcomp when equipping / breaking weapons |
+| `Config.SaveEquippedWeapons` | `true` | re-equip weapons and knives on login |
+| `Config.RepairTime` | `30000` | ms the repair progress bar takes (also enforced server-side) |
+| `Config.DegradeRate` | `0.01` | quality lost per shot |
+| `Config.UpdateDegrade` | `5000` | ms between sending shot batches to the server |
+| `Config.DisableSprintWhileAiming` | `true` |  |
+| `Config.DisableCriticalHits` | `false` | Damage Weapon |
+| `Config.WeaponDamage` | `table` |  |
+| `Config.ThrowableWeaponAmmoTypes` | `table` |  |
+
+### Exports
+
+**Client**
+
+| Export | Arguments | File |
+|---|---|---|
+| `weaponInHands` | `` | `client/client.lua` |
+| `UsedWeapons` | `serial` | `client/client.lua` |
+| `GetUsedWeapons` | `` | `client/client.lua` |
+| `CheckWeaponSerial` | `` | `client/client.lua` |
+| `EquippedWeapons` | `` | `client/weaponclass.lua` |
+| `RemoveWeaponFromPeds` | `` | `client/weaponclass.lua` |
+
+```lua
+-- example
+local result = exports['rsg-weapons']:weaponInHands()
+```
+
+### Callbacks
+
+| Callback | Side | Arguments | File |
+|---|---|---|---|
+| `rsg-weapons:server:startRepair` | server | `src, cb, heldSerial` | `server/server.lua` |
+| `rsg-weapons:server:consumeItem` | server | `src, cb, item` | `server/server.lua` |
+| `rsg-weapons:server:getEquipped` | server | `src, cb` | `server/server.lua` |
+
+```lua
+-- client side
+RSGCore.Functions.TriggerCallback('rsg-weapons:server:startRepair', function(result)
+    -- use result
+end, heldSerial)
+```
+
+### Events
+
+Server events can be fired by any client, so every handler re-validates the player, the arguments and any permission, distance or cooldown on the server. Never add a reward to a handler without those checks.
+
+| Event | Side | Arguments | File |
+|---|---|---|---|
+| `rsg-weapons:client:UseWeapon` | client | `weaponData` | `client/client.lua` |
+| `rsg-weapons:client:UseThrownWeapon` | client | `weaponData` | `client/client.lua` |
+| `rsg-weapons:client:UseEquipment` | client | `weaponData` | `client/client.lua` |
+| `rsg-weapons:client:repairweapon` | client | `` | `client/client.lua` |
+| `rsg-weapons:client:weaponRepaired` | client | `serial` | `client/client.lua` |
+| `rsg-weapons:toggle` | client | `` | `client/client.lua` |
+| `RSGCore:Client:OnPlayerLoaded` | client | `` | `client/client.lua` |
+| `RSGCore:Client:OnPlayerUnload` | client | `` | `client/client.lua` |
+| `rsg-weapons:server:degradeWeapon` | server | `queue` | `server/server.lua` |
+| `rsg-weapons:server:finishRepair` | server | `` | `server/server.lua` |
+| `rsg-weapons:server:cancelRepair` | server | `` | `server/server.lua` |
+| `rsg-weapons:server:saveEquippedWeapon` | server | `serial, isEquipped` | `server/server.lua` |
+| `rsg-weapons:server:saveEquippedKnife` | server | `knifeName, isEquipped` | `server/server.lua` |
+| `rsg-weapons:requestToggle` | server | `` | `server/server.lua` |
+
+```lua
+-- from a client script
+TriggerServerEvent('rsg-weapons:server:degradeWeapon', queue)
+-- from a server script
+TriggerClientEvent('rsg-weapons:client:UseWeapon', source, weaponData)
+```
+
+### Commands
+
+| Command | Notes | File |
+|---|---|---|
+| `/infinityammo` |  | `client/client.lua` |
+
+### Locales
+
+Language files in `locales/`: `cs`, `de`, `el`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt-br`, `ro`. Set the language with `setr rsg:locale "en"`.
+
+<!-- END AUTO-REFERENCE -->
