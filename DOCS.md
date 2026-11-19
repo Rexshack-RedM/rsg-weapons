@@ -20,7 +20,7 @@
 | `client/dataview.lua` | Buffer helper for natives |
 | `server/server.lua` | Wear, repair kit, saved loadout, validation |
 | `server/versionchecker.lua` | GitHub version check |
-| `locales/*.json` | en, cs, de, el, es, fr, it, ja, nl, pl, pt-br, ro |
+| `locales/*.json` | en, cs, de, el, es, fr, it, ja, nl, pl, pt-br, ro, ru |
 
 ## 2. How it works
 - Every gun is tracked by **serial number**, so two of the same model keep separate wear and repair state.
@@ -197,6 +197,6 @@ TriggerClientEvent('rsg-weapons:client:UseWeapon', source, weaponData)
 
 ### Locales
 
-Language files in `locales/`: `cs`, `de`, `el`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt-br`, `ro`. Set the language with `setr rsg:locale "en"`.
+Language files in `locales/`: `cs`, `de`, `el`, `en`, `es`, `fr`, `it`, `ja`, `nl`, `pl`, `pt-br`, `ro`, `ru`. Set the language with `setr rsg:locale "en"`.
 
 <!-- END AUTO-REFERENCE -->

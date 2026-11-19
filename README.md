@@ -211,7 +211,7 @@ Only items in this list (plus `weapon_melee_torch`) can be used up by the server
 
 Text lives in `locales/*.json`. Included languages:
 
-`en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro` (plus community `cs` and `it`)
+`en`, `de`, `el`, `es`, `fr`, `ja`, `nl`, `pl`, `pt-br`, `ro`, `ru` (plus community `cs` and `it`)
 
 The server language follows rsg-core's locale setting:
 

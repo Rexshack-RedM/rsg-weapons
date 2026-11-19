@@ -1,0 +1,21 @@
+{
+    "cl_weapon_degraded": "Ваше оружие сломано!",
+    "cl_weapon_broken_hint": "Используйте ремонтный набор, чтобы починить его.",
+    "cl_repairing_weapon": "Ремонт оружия",
+    "cl_repair_cancelled": "Ремонт отменён. Набор не использован.",
+    "cl_no_weapon_found": "Оружие не найдено",
+    "cl_no_weapon_found_desc": "У вас нет повреждённого оружия для ремонта",
+    "cl_item_need": "Нужен предмет",
+    "cl_item_need_desc": "Нужен ремонтный набор для оружия!",
+    "cl_ammo_max": "Достигнут максимум патронов!",
+    "cl_infinite_ammo_title": "Бесконечные патроны",
+    "cl_infinite_ammo_on": "Бесконечные патроны включены.",
+    "cl_infinite_ammo_off": "Бесконечные патроны отключены.",
+    "cl_no_weapon_in_hand": "У вас в руках нет оружия.",
+    "cl_dual_wield_full": "В обеих руках уже есть оружие",
+    "cl_dual_wield_failed": "Не удалось экипировать оружие",
+    "sv_weapon_repair": "Починить оружие",
+    "sv_weapon_repaired": "%s отремонтировано",
+    "sv_weapon_not_damaged": "Это оружие не нуждается в ремонте",
+    "sv_no_permission": "У вас нет прав на использование этой команды."
+}
